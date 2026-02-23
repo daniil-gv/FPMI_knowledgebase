@@ -4,7 +4,7 @@ site_url: https://daniil-gv.github.io/FPMI_knowledgebase/
 theme:
   name: material
 
-docs_dir: vault
+docs_dir: vault/fpmi
 site_dir: site
 
 nav:

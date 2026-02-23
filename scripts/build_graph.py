@@ -1,7 +1,7 @@
 import os, json
 import yaml
 
-VAULT_DIR = "vault"
+VAULT_DIR = "vault/fpmi"
 # Важно: baseurl для GitHub Pages репо-проекта: /REPO/
 # Мы прокинем это в CI через env, чтобы не хардкодить.
 BASE_URL = os.environ.get("BASE_URL", "/")

@@ -1,0 +1,20 @@
+site_name: Institute Knowledge Base
+site_url: https://YOUR_USERNAME.github.io/YOUR_REPO/
+
+theme:
+  name: material
+
+docs_dir: vault
+site_dir: site
+
+nav:
+  - Home: index.md
+  - Areas:
+      - Analysis: Areas/Analysis.md
+  - Labs:
+      - Lab PDE: Labs/Lab PDE.md
+      - Lab ML: Labs/Lab ML.md
+  - People:
+      - Ivanov: People/Ivanov.md
+      - Kim: People/Kim.md
+  - Graph: graph.md

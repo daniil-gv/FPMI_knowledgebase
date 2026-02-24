@@ -9,6 +9,7 @@ BASE_URL = os.environ.get("BASE_URL", "/")
 nodes = []
 edges = []
 entities = {}  # slug -> data
+collab_pairs = set()
 
 def load_frontmatter(path: str):
     with open(path, "r", encoding="utf-8") as f:
@@ -21,7 +22,9 @@ def load_frontmatter(path: str):
     return yaml.safe_load(parts[1]) or {}
 
 # 1) собрать сущности
-for root, _, files in os.walk(VAULT_DIR):
+for root, dirs, files in os.walk(VAULT_DIR):
+    # исключаем служебные директории (Obsidian/шаблоны)
+    dirs[:] = [d for d in dirs if not d.startswith(".") and not d.startswith("_")]
     for fn in files:
         if not fn.endswith(".md"):
             continue
@@ -70,6 +73,10 @@ for slug, fm in entities.items():
 
         for collab in fm.get("collaborates_with", []) or []:
             if collab and has(collab):
+                pair = tuple(sorted((slug, collab)))
+                if pair in collab_pairs:
+                    continue
+                collab_pairs.add(pair)
                 edges.append({"data": {"source": slug, "target": collab, "type": "collaboration", "weight": 1}})
 
     if t == "person":

@@ -3,103 +3,393 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Institute Graph</title>
+  <title>Institute Graph - Semantic Zoom + Click-to-Zoom</title>
   <script src="https://unpkg.com/cytoscape@3.27.0/dist/cytoscape.min.js"></script>
+
   <style>
-    html, body, #cy { height: 100%; margin: 0; }
-    #bar { position: fixed; top: 10px; left: 10px; background: white; border: 1px solid #ddd; border-radius: 10px; padding: 8px 10px; font: 14px system-ui; z-index: 10; }
-    #bar b { margin-right: 8px; }
+    html, body { height: 100%; margin: 0; }
+    #app { height: 100%; display: grid; grid-template-rows: auto 1fr; }
+    #bar {
+      font: 14px/1.2 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      padding: 10px 12px;
+      border-bottom: 1px solid #e6e6e6;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      user-select: none;
+      flex-wrap: wrap;
+    }
+    #cy { height: 100%; }
+    .pill {
+      padding: 4px 10px;
+      border: 1px solid #ddd;
+      border-radius: 999px;
+      background: #fafafa;
+    }
+    .hint { color: #666; }
+    .spacer { flex: 1; }
+    button {
+      border: 1px solid #ddd;
+      background: white;
+      border-radius: 10px;
+      padding: 6px 10px;
+      cursor: pointer;
+    }
+    button:hover { background: #f6f6f6; }
+    code { background: #f3f3f3; padding: 2px 6px; border-radius: 6px; }
+    #error {
+      margin: 16px;
+      font: 14px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      white-space: pre-wrap;
+      color: #8b0000;
+    }
   </style>
 </head>
+
 <body>
-  <div id="bar"><b>LOD:</b><span id="lod">—</span> <span style="opacity:.6">| колесо: zoom | клик: приближение | shift+клик: открыть</span></div>
-  <div id="cy"></div>
+  <div id="app">
+    <div id="bar">
+      <span class="pill"><b>Semantic zoom</b>: области -> лаборатории -> люди</span>
+      <span class="hint">Zoom: колесо/трекпад. Клик по узлу - авто-приближение. Shift+клик - открыть страницу.</span>
+
+      <span class="spacer"></span>
+
+      <span class="pill">LOD: <span id="lod">-</span></span>
+      <span class="pill">Nodes: <span id="nodesCount">-</span></span>
+      <span class="pill">Edges: <span id="edgesCount">-</span></span>
+      <button id="fit">Fit</button>
+      <button id="regen">Regenerate</button>
+    </div>
+
+    <div id="cy"></div>
+  </div>
 
 <script>
-const lodEl = document.getElementById('lod');
+const THRESH = {
+  areasOnly: 0.65,
+  labsOnly: 1.25
+};
 
-// пороги (подбираются)
-const THRESH = { areasOnly: 0.75, labsOnly: 1.35 };
+let cy = null;
 
-function showTypes(cy, typesToShow) {
-  const all = ['area','lab','person'];
+function buildHierarchyMaps(elements) {
+  const labToArea = new Map();
+  const personToLab = new Map();
 
-  for (const t of all) {
+  for (const edge of elements.edges) {
+    const d = edge.data || {};
+    if (d.type === "belongs_to") {
+      labToArea.set(d.source, d.target);
+    } else if (d.type === "member_of") {
+      personToLab.set(d.source, d.target);
+    }
+  }
+
+  return { labToArea, personToLab };
+}
+
+function buildPositions(elements) {
+  const pos = {};
+  const areaNodes = elements.nodes.filter((n) => (n.data || {}).type === "area");
+  const labNodes = elements.nodes.filter((n) => (n.data || {}).type === "lab");
+  const personNodes = elements.nodes.filter((n) => (n.data || {}).type === "person");
+  const { labToArea, personToLab } = buildHierarchyMaps(elements);
+
+  const R_AREA = Math.max(320, 180 * Math.sqrt(Math.max(1, areaNodes.length)));
+  const R_LAB = 170;
+  const R_PERSON = 58;
+
+  areaNodes.forEach((n, i) => {
+    const ang = (2 * Math.PI * i) / Math.max(1, areaNodes.length);
+    pos[n.data.id] = { x: Math.cos(ang) * R_AREA, y: Math.sin(ang) * R_AREA };
+  });
+
+  const labsByArea = new Map();
+
+  for (const ln of labNodes) {
+    const labId = ln.data.id;
+    const areaId = labToArea.get(labId);
+    if (areaId && !labsByArea.has(areaId)) labsByArea.set(areaId, []);
+    if (areaId) labsByArea.get(areaId).push(ln);
+  }
+
+  for (const [areaId, labs] of labsByArea.entries()) {
+    const c = pos[areaId] || { x: 0, y: 0 };
+    labs.forEach((ln, j) => {
+      const ang = (2 * Math.PI * j) / Math.max(1, labs.length);
+      pos[ln.data.id] = {
+        x: c.x + Math.cos(ang) * R_LAB,
+        y: c.y + Math.sin(ang) * R_LAB
+      };
+    });
+  }
+
+  // Лабы без parent-area раскладываем вокруг нуля.
+  let orphanLabIndex = 0;
+  for (const ln of labNodes) {
+    if (pos[ln.data.id]) continue;
+    const ang = (2 * Math.PI * orphanLabIndex) / Math.max(1, labNodes.length);
+    orphanLabIndex += 1;
+    pos[ln.data.id] = { x: Math.cos(ang) * 240, y: Math.sin(ang) * 240 };
+  }
+
+  const peopleByLab = new Map();
+  for (const pn of personNodes) {
+    const personId = pn.data.id;
+    const labId = personToLab.get(personId);
+    if (!labId) continue;
+    if (!peopleByLab.has(labId)) peopleByLab.set(labId, []);
+    peopleByLab.get(labId).push(pn);
+  }
+
+  for (const [labId, people] of peopleByLab.entries()) {
+    const c = pos[labId] || { x: 0, y: 0 };
+    people.forEach((pn, k) => {
+      const ang = (2 * Math.PI * k) / Math.max(1, people.length);
+      pos[pn.data.id] = {
+        x: c.x + Math.cos(ang) * R_PERSON,
+        y: c.y + Math.sin(ang) * R_PERSON
+      };
+    });
+  }
+
+  // Людей без lab привязываем к центру.
+  let orphanPersonIndex = 0;
+  for (const pn of personNodes) {
+    if (pos[pn.data.id]) continue;
+    const ang = (2 * Math.PI * orphanPersonIndex) / Math.max(1, personNodes.length);
+    orphanPersonIndex += 1;
+    pos[pn.data.id] = { x: Math.cos(ang) * 120, y: Math.sin(ang) * 120 };
+  }
+
+  return pos;
+}
+
+function showTypes(typesToShow) {
+  const allTypes = ["area", "lab", "person"];
+  for (const t of allTypes) {
     const coll = cy.nodes(`[type="${t}"]`);
-    typesToShow.includes(t) ? coll.show() : coll.hide();
+    if (typesToShow.includes(t)) coll.show();
+    else coll.hide();
   }
 
   cy.edges().hide();
-  cy.edges().forEach(e => {
+  cy.edges().forEach((e) => {
     if (!e.source().hidden() && !e.target().hidden()) e.show();
   });
 }
 
-function applyLOD(cy) {
+function labelPolicy(z) {
+  if (z < THRESH.areasOnly) {
+    cy.style()
+      .selector('node[type="area"]').style({ "text-opacity": 1 })
+      .selector('node[type="lab"]').style({ "text-opacity": 0 })
+      .selector('node[type="person"]').style({ "text-opacity": 0 })
+      .update();
+    return;
+  }
+  if (z < THRESH.labsOnly) {
+    cy.style()
+      .selector('node[type="area"]').style({ "text-opacity": 1 })
+      .selector('node[type="lab"]').style({ "text-opacity": 1 })
+      .selector('node[type="person"]').style({ "text-opacity": 0 })
+      .update();
+    return;
+  }
+  cy.style()
+    .selector('node[type="area"]').style({ "text-opacity": 1 })
+    .selector('node[type="lab"]').style({ "text-opacity": 1 })
+    .selector('node[type="person"]').style({ "text-opacity": 1 })
+    .update();
+}
+
+function applyLOD() {
+  const lodEl = document.getElementById("lod");
   const z = cy.zoom();
   if (z < THRESH.areasOnly) {
-    lodEl.textContent = 'Areas';
-    showTypes(cy, ['area']);
+    lodEl.textContent = "Области";
+    showTypes(["area"]);
   } else if (z < THRESH.labsOnly) {
-    lodEl.textContent = 'Areas + Labs';
-    showTypes(cy, ['area','lab']);
+    lodEl.textContent = "Области + Лабы";
+    showTypes(["area", "lab"]);
   } else {
-    lodEl.textContent = 'Areas + Labs + People';
-    showTypes(cy, ['area','lab','person']);
+    lodEl.textContent = "Области + Лабы + Люди";
+    showTypes(["area", "lab", "person"]);
   }
+  labelPolicy(z);
 }
 
-function animateTo(cy, node, targetZoom) {
-  cy.animate({ center: { eles: node }, zoom: targetZoom }, { duration: 450, easing: 'ease-in-out' });
+function animateToNode(node, targetZoom) {
+  const z = Math.max(0.2, Math.min(5, targetZoom));
+  cy.animate({ center: { eles: node }, zoom: z }, { duration: 450, easing: "ease-in-out" });
 }
 
-fetch("data/graph.json")
-  .then(r => r.json())
-  .then(graph => {
-    const cy = cytoscape({
-      container: document.getElementById('cy'),
-      elements: graph,
-      layout: { name: 'cose', animate: false }, // позже можно заменить на preset/фиксированный
-      wheelSensitivity: 0.2,
-      style: [
-        { selector: 'node', style: { 'label': 'data(label)', 'text-valign':'center', 'text-halign':'center', 'font-size': 12, 'background-color':'#fff', 'border-width':1, 'border-color':'#ccc', 'shape':'round-rectangle', 'padding':10 } },
-        { selector: 'node[type="area"]', style: { 'font-size': 18, 'background-color':'#f7f7ff', 'border-color':'#bdbdfc', 'padding':18 } },
-        { selector: 'node[type="lab"]',  style: { 'background-color':'#f8fff7', 'border-color':'#b7e3b0' } },
-        { selector: 'node[type="person"]', style: { 'shape':'ellipse', 'width':18, 'height':18, 'padding':0, 'font-size': 9, 'background-color':'#fff7f7', 'border-color':'#f0b4b4' } },
-        { selector: 'edge', style: { 'curve-style':'bezier', 'line-color':'#bbb', 'width': 2, 'opacity': 0.85 } }
-      ]
-    });
+function renderGraph(elements) {
+  const positions = buildPositions(elements);
 
-    // старт
-    cy.fit(undefined, 40);
-    applyLOD(cy);
+  if (cy) cy.destroy();
 
-    // обновление LOD по зуму (debounce)
-    let raf = null;
-    cy.on('zoom', () => {
-      if (raf) cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => { applyLOD(cy); raf = null; });
-    });
-
-    // клик: приближение; shift+клик: открыть url
-    cy.on('tap', 'node', (evt) => {
-      const n = evt.target;
-      const type = n.data('type');
-      const url = n.data('url');
-
-      if (evt.originalEvent && evt.originalEvent.shiftKey && url) {
-        window.open(url, '_blank');
-        return;
+  cy = cytoscape({
+    container: document.getElementById("cy"),
+    elements,
+    layout: { name: "preset", positions },
+    wheelSensitivity: 0.18,
+    textureOnViewport: true,
+    motionBlur: true,
+    style: [
+      {
+        selector: "node",
+        style: {
+          label: "data(label)",
+          "text-valign": "center",
+          "text-halign": "center",
+          "font-size": 12,
+          "text-wrap": "wrap",
+          "text-max-width": 120,
+          "border-width": 1,
+          "border-color": "#ccc",
+          "background-color": "#fff",
+          color: "#111",
+          padding: 10,
+          shape: "round-rectangle"
+        }
+      },
+      {
+        selector: 'node[type="area"]',
+        style: {
+          "background-color": "#f7f7ff",
+          "border-color": "#bdbdfc",
+          "font-size": 18,
+          padding: 18,
+          "text-max-width": 220
+        }
+      },
+      {
+        selector: 'node[type="lab"]',
+        style: {
+          "background-color": "#f8fff7",
+          "border-color": "#b7e3b0",
+          "font-size": 12,
+          padding: 12,
+          "text-max-width": 160
+        }
+      },
+      {
+        selector: 'node[type="person"]',
+        style: {
+          shape: "ellipse",
+          width: 18,
+          height: 18,
+          padding: 0,
+          "font-size": 9,
+          "text-max-width": 60,
+          "background-color": "#fff7f7",
+          "border-color": "#f0b4b4"
+        }
+      },
+      {
+        selector: "edge",
+        style: {
+          width: "mapData(weight, 1, 16, 1, 7)",
+          "line-color": "#bbb",
+          "curve-style": "bezier",
+          opacity: 0.85
+        }
+      },
+      {
+        selector: 'edge[type="member_of"], edge[type="belongs_to"]',
+        style: {
+          "line-color": "#b9c1c9",
+          opacity: 0.65
+        }
+      },
+      {
+        selector: 'edge[type="collaboration"]',
+        style: {
+          "line-color": "#86a5bf",
+          opacity: 0.8
+        }
       }
-
-      if (type === 'area') animateTo(cy, n, THRESH.areasOnly + 0.2);
-      else if (type === 'lab') animateTo(cy, n, THRESH.labsOnly + 0.25);
-      else cy.animate({ center: { eles: n } }, { duration: 300 });
-    });
-  })
-  .catch(err => {
-    document.body.innerHTML = "<pre style='padding:16px'>Ошибка загрузки graph.json:\n" + err + "</pre>";
+    ]
   });
+
+  document.getElementById("nodesCount").textContent = String(cy.nodes().length);
+  document.getElementById("edgesCount").textContent = String(cy.edges().length);
+
+  document.getElementById("fit").onclick = () => cy.fit(undefined, 60);
+
+  let raf = null;
+  cy.on("zoom", () => {
+    if (raf) cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(() => {
+      applyLOD();
+      raf = null;
+    });
+  });
+
+  cy.on("tap", "node", (evt) => {
+    const n = evt.target;
+    const type = n.data("type");
+    const url = n.data("url");
+    if (evt.originalEvent && evt.originalEvent.shiftKey && url) {
+      window.open(url, "_blank");
+      return;
+    }
+
+    if (type === "area") {
+      animateToNode(n, THRESH.areasOnly + 0.12);
+    } else if (type === "lab") {
+      animateToNode(n, THRESH.labsOnly + 0.2);
+    } else {
+      cy.animate({ center: { eles: n } }, { duration: 350, easing: "ease-in-out" });
+    }
+  });
+
+  cy.on("tap", (evt) => {
+    if (evt.target !== cy) return;
+    const newZ = Math.max(0.2, cy.zoom() * 0.85);
+    cy.animate({ zoom: newZ }, { duration: 250 });
+  });
+
+  cy.fit(undefined, 60);
+  applyLOD();
+}
+
+async function loadAndRender(useCacheBust) {
+  const errorElId = "error";
+  const existing = document.getElementById(errorElId);
+  if (existing) existing.remove();
+
+  const suffix = useCacheBust ? `?t=${Date.now()}` : "";
+  const res = await fetch(`data/graph.json${suffix}`);
+  if (!res.ok) {
+    throw new Error(`HTTP ${res.status} при загрузке data/graph.json`);
+  }
+
+  const raw = await res.json();
+  const elements = {
+    nodes: Array.isArray(raw.nodes) ? raw.nodes : [],
+    edges: Array.isArray(raw.edges) ? raw.edges : []
+  };
+  renderGraph(elements);
+}
+
+function showError(err) {
+  if (cy) {
+    cy.destroy();
+    cy = null;
+  }
+  const panel = document.createElement("pre");
+  panel.id = "error";
+  panel.textContent = `Ошибка загрузки graph.json:\n${String(err)}`;
+  document.body.appendChild(panel);
+}
+
+document.getElementById("regen").addEventListener("click", () => {
+  loadAndRender(true).catch(showError);
+});
+
+loadAndRender(false).catch(showError);
 </script>
 </body>
 </html>

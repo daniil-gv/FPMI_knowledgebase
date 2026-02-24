@@ -2,30 +2,6 @@
   "nodes": [
     {
       "data": {
-        "id": "lab-slug",
-        "label": "Lab Title",
-        "type": "lab",
-        "url": "/FPMI_knowledgebase/_templates/lab/"
-      }
-    },
-    {
-      "data": {
-        "id": "person-slug",
-        "label": "Person Name",
-        "type": "person",
-        "url": "/FPMI_knowledgebase/_templates/person/"
-      }
-    },
-    {
-      "data": {
-        "id": "area-slug",
-        "label": "Area Title",
-        "type": "area",
-        "url": "/FPMI_knowledgebase/_templates/area/"
-      }
-    },
-    {
-      "data": {
         "id": "ivanov",
         "label": "Ivanov I.I.",
         "type": "person",
@@ -68,22 +44,6 @@
   "edges": [
     {
       "data": {
-        "source": "lab-slug",
-        "target": "analysis",
-        "type": "belongs_to",
-        "weight": 1
-      }
-    },
-    {
-      "data": {
-        "source": "person-slug",
-        "target": "lab-slug",
-        "type": "member_of",
-        "weight": 1
-      }
-    },
-    {
-      "data": {
         "source": "ivanov",
         "target": "lab-pde",
         "type": "member_of",
@@ -119,14 +79,6 @@
         "source": "lab-pde",
         "target": "analysis",
         "type": "belongs_to",
-        "weight": 1
-      }
-    },
-    {
-      "data": {
-        "source": "lab-pde",
-        "target": "lab-ml",
-        "type": "collaboration",
         "weight": 1
       }
     }

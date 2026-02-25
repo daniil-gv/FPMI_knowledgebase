@@ -1,0 +1,86 @@
+{
+  "nodes": [
+    {
+      "data": {
+        "id": "lab-ml",
+        "label": "Data/ML Lab",
+        "type": "lab",
+        "url": "/Labs/Lab_ML/"
+      }
+    },
+    {
+      "data": {
+        "id": "lab-pde",
+        "label": "PDE & Modeling Lab",
+        "type": "lab",
+        "url": "/Labs/Lab_PDE/"
+      }
+    },
+    {
+      "data": {
+        "id": "analysis",
+        "label": "Analysis",
+        "type": "area",
+        "url": "/Areas/Analysis/"
+      }
+    },
+    {
+      "data": {
+        "id": "kim",
+        "label": "Kim A.",
+        "type": "person",
+        "url": "/People/Kim/"
+      }
+    },
+    {
+      "data": {
+        "id": "ivanov",
+        "label": "Ivanov I.I.",
+        "type": "person",
+        "url": "/People/Ivanov/"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "data": {
+        "source": "lab-ml",
+        "target": "analysis",
+        "type": "belongs_to",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "source": "lab-ml",
+        "target": "lab-pde",
+        "type": "collaboration",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "source": "lab-pde",
+        "target": "analysis",
+        "type": "belongs_to",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "source": "kim",
+        "target": "lab-ml",
+        "type": "member_of",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "source": "ivanov",
+        "target": "lab-pde",
+        "type": "member_of",
+        "weight": 1
+      }
+    }
+  ]
+}

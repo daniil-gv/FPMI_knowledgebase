@@ -1,25 +1,19 @@
 <%*
 const title = await tp.system.prompt("Название лаборатории?");
 if (!title) return;
-
 await tp.file.rename(title);
 
-// -------- helpers --------
-const mdFiles = () => app.vault.getMarkdownFiles();
-const fm = (file) => app.metadataCache.getFileCache(file)?.frontmatter;
-const byType = (t) => mdFiles().filter(f => fm(f)?.type === t);
-const uniq = (arr) => [...new Set(arr)].filter(Boolean);
+const files = app.vault.getMarkdownFiles();
+const fm = f => app.metadataCache.getFileCache(f)?.frontmatter;
 
+// ---- helpers ----
 const asArray = (v) => Array.isArray(v) ? v : (v ? [v] : []);
-const hasText = (arr, text) => asArray(arr).some(x => String(x).trim() === String(text).trim());
+const stripQuotes = (s) => String(s).replace(/^"+|"+$/g, "").trim(); // убрать внешние кавычки
+const linkText = (s) => stripQuotes(s).replace(/^\[\[|\]\]$/g, "").trim(); // получить "Название" из [[Название]]
+const makeLink = (name) => `[[${name}]]`;
+const makeQuotedLink = (name) => `"[[${name}]]"`;
 
-async function pickOne(options, placeholder="Выбери") {
-  options = uniq(options).sort((a,b)=>a.localeCompare(b,'ru'));
-  if (!options.length) return "";
-  return await tp.system.suggester(options, options, false, placeholder) || "";
-}
-async function pickMany(options, placeholder="Выбери (ESC чтобы закончить)") {
-  options = uniq(options).sort((a,b)=>a.localeCompare(b,'ru'));
+async function pickMany(options, placeholder) {
   let left = [...options];
   let picked = [];
   while (left.length) {
@@ -31,35 +25,87 @@ async function pickMany(options, placeholder="Выбери (ESC чтобы за�
   return picked;
 }
 
-// -------- выбери область --------
-const areas = byType("area").map(f => f.basename);
-const selectedArea = await pickOne(areas, "Выбери область науки");
+// ---- lists ----
+const areaFiles = files.filter(f => fm(f)?.type === "area");
+const areaNames = areaFiles
+  .map(f => f.basename)
+  .sort((a,b)=>a.localeCompare(b,'ru'));
 
-// -------- кандидаты для коллабораций: только лабы этой области --------
-const allLabs = byType("lab");
-const labsSameArea = allLabs
-  .filter(f => f.basename !== title)
-  .filter(f => hasText(fm(f)?.area, selectedArea))     // area может быть списком или строкой
-  .map(f => f.basename);
+if (!areaNames.length) { new Notice("Сначала создай хотя бы одну область (type: area)"); return; }
 
-const collaborators = await pickMany(labsSameArea, "Коллаборации: только лабы этой области");
+const labFiles = files.filter(f => fm(f)?.type === "lab");
+const labNames = labFiles
+  .map(f => f.basename)
+  .filter(n => n !== title)
+  .sort((a,b)=>a.localeCompare(b,'ru'));
 
-// -------- участники (пока без фильтра) --------
-const people = byType("person").map(f => f.basename);
-const members = await pickMany(people, "Добавить участников");
+// ---- choose relations ----
+const selectedArea = await tp.system.suggester(areaNames, areaNames, false, "Выбери область");
 
-// -------- YAML --------
+// (опционально) фильтрация коллабораций по той же области:
+const scope = await tp.system.suggester(
+  ["Только лабы этой области", "Любые лабы"],
+  ["same", "all"],
+  false,
+  "Какие лабы показывать в коллаборациях?"
+);
+
+let labCandidates = labNames;
+
+if (scope === "same" && selectedArea) {
+  labCandidates = labFiles
+    .filter(f => f.basename !== title)
+    .filter(f => {
+      const a = asArray(fm(f)?.area).map(linkText); // area: ["[[X]]"] или [...]
+      return a.includes(selectedArea);
+    })
+    .map(f => f.basename)
+    .sort((a,b)=>a.localeCompare(b,'ru'));
+}
+
+const collaborators = await pickMany(labCandidates, "Коллаборации (лабы), ESC чтобы закончить");
+const collaboratorsLinks = collaborators.map(x => makeQuotedLink(x));
+
+// ---- write current note ----
 tR += `---
 type: lab
 title: ${title}
-area: ${selectedArea ? `[${selectedArea}]` : `[]`}
-members: ${members.length ? `[${members.join(", ")}]` : `[]`}
-collaborates_with: ${collaborators.length ? `[${collaborators.join(", ")}]` : `[]`}
+area: ${selectedArea ? `["[[${selectedArea}]]"]` : `[]`}
+collaborates_with: [${collaboratorsLinks.join(", ")}]
 tags: [kb/lab]
 ---
 
 # ${title}
 
 ## Description
+
+## Members (авто)
+\`\`\`dataview
+LIST FROM ""
+WHERE type = "person" AND contains(lab, this.file.link)
+\`\`\`
 `;
+
+// ---- add reverse links to collaborator labs ----
+const thisLink = makeLink(title);
+
+// helper: find lab file by basename
+const findLabFile = (name) => labFiles.find(f => f.basename === name);
+
+for (const otherName of collaborators) {
+  const otherFile = findLabFile(otherName);
+  if (!otherFile) continue;
+
+  await app.fileManager.processFrontMatter(otherFile, (frontmatter) => {
+    let cw = asArray(frontmatter.collaborates_with).map(stripQuotes); // теперь элементы вида [[X]]
+    const normalized = cw.map(linkText); // только имена
+
+    if (!normalized.includes(title)) {
+      cw.push(thisLink); // добавляем [[title]]
+    }
+
+    // возвращаем как список строк с кавычками: ["[[...]]", ...]
+    frontmatter.collaborates_with = cw.map(x => `${x}`);
+  });
+}
 %>

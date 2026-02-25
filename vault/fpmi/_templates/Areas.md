@@ -1,17 +1,18 @@
 <%*
-const title = await tp.system.prompt("Название области науки?");
+const title = await tp.system.prompt("Название области?");
 if (!title) return;
-
 await tp.file.rename(title);
 
-// helpers
-const mdFiles = () => app.vault.getMarkdownFiles();
-const fm = (file) => app.metadataCache.getFileCache(file)?.frontmatter;
-const byType = (t) => mdFiles().filter(f => fm(f)?.type === t);
-const uniq = (arr) => [...new Set(arr)].filter(Boolean);
+const files = app.vault.getMarkdownFiles();
+const fm = f => app.metadataCache.getFileCache(f)?.frontmatter;
 
-async function pickMany(options, placeholder="Выбери (ESC чтобы закончить)") {
-  options = uniq(options).sort((a,b)=>a.localeCompare(b,'ru'));
+// ---- helpers ----
+const asArray = (v) => Array.isArray(v) ? v : (v ? [v] : []);
+const normalizeLinkText = (s) => String(s).replace(/^"+|"+$/g,"").trim(); // убираем кавычки
+const makeLinkString = (name) => `[[${name}]]`;
+const makeQuotedLinkString = (name) => `"[[${name}]]"`; // как у тебя
+
+async function pickMany(options, placeholder) {
   let left = [...options];
   let picked = [];
   while (left.length) {
@@ -23,18 +24,45 @@ async function pickMany(options, placeholder="Выбери (ESC чтобы за�
   return picked;
 }
 
-const areas = byType("area").map(f => f.basename).filter(n => n !== title);
-const collaborators = await pickMany(areas, "Добавить связанные области");
+// ---- собрать список областей ----
+const areaFiles = files.filter(f => fm(f)?.type === "area");
+const areaNames = areaFiles
+  .map(f => f.basename)
+  .filter(n => n !== title)
+  .sort((a,b)=>a.localeCompare(b,'ru'));
 
+// ---- выбрать коллаборации ----
+const collaborators = await pickMany(areaNames, "Коллаборации (области)");
+const collaboratorsLinks = collaborators.map(x => makeQuotedLinkString(x));
+
+// ---- записать текущую заметку ----
 tR += `---
 type: area
-title: "${title}"
-collaborates_with: [${collaborators.map(a => `"${a}"`).join(", ")}]
-tags: ["kb/area"]
+title: ${title}
+collaborates_with: [${collaboratorsLinks.join(", ")}]
+tags: [kb/area]
 ---
 
 # ${title}
 
 ## Description
 `;
+
+// ---- двустороннее прокидывание ----
+const thisLink = makeLinkString(title);
+const findAreaFileByName = (name) => areaFiles.find(f => f.basename === name);
+
+for (const otherName of collaborators) {
+  const otherFile = findAreaFileByName(otherName);
+  if (!otherFile) continue;
+
+  await app.fileManager.processFrontMatter(otherFile, (frontmatter) => {
+    let cw = asArray(frontmatter.collaborates_with).map(normalizeLinkText);
+    if (!cw.includes(thisLink)) {
+      cw.push(thisLink);
+    }
+
+    frontmatter.collaborates_with = cw.map(x => `${x}`);
+  });
+}
 %>

@@ -5,6 +5,6 @@
     "tags": "tags",
     "area": "multitext",
     "lab": "multitext",
-    "collaborates_with": "text"
+    "collaborates_with": "multitext"
   }
 }

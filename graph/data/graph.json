@@ -2,82 +2,958 @@
   "nodes": [
     {
       "data": {
-        "id": "lab-ml",
-        "label": "Data/ML Lab",
+        "id": "lab:ЦФМ",
+        "label": "ЦФМ",
         "type": "lab",
-        "url": "/Labs/Lab_ML/"
+        "url": "/FPMI_knowledgebase/Labs/%D0%A6%D0%A4%D0%9C/"
       }
     },
     {
       "data": {
-        "id": "lab-pde",
-        "label": "PDE & Modeling Lab",
+        "id": "lab:Лаборатория воплощенного искусственного интеллекта",
+        "label": "Лаборатория воплощенного искусственного интеллекта",
         "type": "lab",
-        "url": "/Labs/Lab_PDE/"
+        "url": "/FPMI_knowledgebase/Labs/%D0%9B%D0%B0%D0%B1%D0%BE%D1%80%D0%B0%D1%82%D0%BE%D1%80%D0%B8%D1%8F%20%D0%B2%D0%BE%D0%BF%D0%BB%D0%BE%D1%89%D0%B5%D0%BD%D0%BD%D0%BE%D0%B3%D0%BE%20%D0%B8%D1%81%D0%BA%D1%83%D1%81%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D0%BE%D0%B3%D0%BE%20%D0%B8%D0%BD%D1%82%D0%B5%D0%BB%D0%BB%D0%B5%D0%BA%D1%82%D0%B0/"
       }
     },
     {
       "data": {
-        "id": "analysis",
-        "label": "Analysis",
+        "id": "lab:Лаборатория интеллектуального транспорта",
+        "label": "Лаборатория интеллектуального транспорта",
+        "type": "lab",
+        "url": "/FPMI_knowledgebase/Labs/%D0%9B%D0%B0%D0%B1%D0%BE%D1%80%D0%B0%D1%82%D0%BE%D1%80%D0%B8%D1%8F%20%D0%B8%D0%BD%D1%82%D0%B5%D0%BB%D0%BB%D0%B5%D0%BA%D1%82%D1%83%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B3%D0%BE%20%D1%82%D1%80%D0%B0%D0%BD%D1%81%D0%BF%D0%BE%D1%80%D1%82%D0%B0/"
+      }
+    },
+    {
+      "data": {
+        "id": "lab:CombGeo",
+        "label": "CombGeo",
+        "type": "lab",
+        "url": "/FPMI_knowledgebase/Labs/CombGeo/"
+      }
+    },
+    {
+      "data": {
+        "id": "lab:Лаборатория когнитивных динамических систем",
+        "label": "Лаборатория когнитивных динамических систем",
+        "type": "lab",
+        "url": "/FPMI_knowledgebase/Labs/%D0%9B%D0%B0%D0%B1%D0%BE%D1%80%D0%B0%D1%82%D0%BE%D1%80%D0%B8%D1%8F%20%D0%BA%D0%BE%D0%B3%D0%BD%D0%B8%D1%82%D0%B8%D0%B2%D0%BD%D1%8B%D1%85%20%D0%B4%D0%B8%D0%BD%D0%B0%D0%BC%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D1%85%20%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC/"
+      }
+    },
+    {
+      "data": {
+        "id": "area:Робототехника",
+        "label": "Робототехника",
         "type": "area",
-        "url": "/Areas/Analysis/"
+        "url": "/FPMI_knowledgebase/Areas/%D0%A0%D0%BE%D0%B1%D0%BE%D1%82%D0%BE%D1%82%D0%B5%D1%85%D0%BD%D0%B8%D0%BA%D0%B0/"
       }
     },
     {
       "data": {
-        "id": "kim",
-        "label": "Kim A.",
-        "type": "person",
-        "url": "/People/Kim/"
+        "id": "area:Топология",
+        "label": "Топология",
+        "type": "area",
+        "url": "/FPMI_knowledgebase/Areas/%D0%A2%D0%BE%D0%BF%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F/"
       }
     },
     {
       "data": {
-        "id": "ivanov",
-        "label": "Ivanov I.I.",
+        "id": "area:Комбинаторика",
+        "label": "Комбинаторика",
+        "type": "area",
+        "url": "/FPMI_knowledgebase/Areas/%D0%9A%D0%BE%D0%BC%D0%B1%D0%B8%D0%BD%D0%B0%D1%82%D0%BE%D1%80%D0%B8%D0%BA%D0%B0/"
+      }
+    },
+    {
+      "data": {
+        "id": "area:Алгебра",
+        "label": "Алгебра",
+        "type": "area",
+        "url": "/FPMI_knowledgebase/Areas/%D0%90%D0%BB%D0%B3%D0%B5%D0%B1%D1%80%D0%B0/"
+      }
+    },
+    {
+      "data": {
+        "id": "person:Скрынник",
+        "label": "Скрынник",
         "type": "person",
-        "url": "/People/Ivanov/"
+        "url": "/FPMI_knowledgebase/People/%D0%A1%D0%BA%D1%80%D1%8B%D0%BD%D0%BD%D0%B8%D0%BA/"
+      }
+    },
+    {
+      "data": {
+        "id": "person:Линок",
+        "label": "Линок",
+        "type": "person",
+        "url": "/FPMI_knowledgebase/People/%D0%9B%D0%B8%D0%BD%D0%BE%D0%BA/"
+      }
+    },
+    {
+      "data": {
+        "id": "person:Макаров",
+        "label": "Макаров",
+        "type": "person",
+        "url": "/FPMI_knowledgebase/People/%D0%9C%D0%B0%D0%BA%D0%B0%D1%80%D0%BE%D0%B2/"
+      }
+    },
+    {
+      "data": {
+        "id": "person:Воронов",
+        "label": "Воронов",
+        "type": "person",
+        "url": "/FPMI_knowledgebase/People/%D0%92%D0%BE%D1%80%D0%BE%D0%BD%D0%BE%D0%B2/"
+      }
+    },
+    {
+      "data": {
+        "id": "person:Шокуров",
+        "label": "Шокуров",
+        "type": "person",
+        "url": "/FPMI_knowledgebase/People/%D0%A8%D0%BE%D0%BA%D1%83%D1%80%D0%BE%D0%B2/"
+      }
+    },
+    {
+      "data": {
+        "id": "person:Брав",
+        "label": "Брав",
+        "type": "person",
+        "url": "/FPMI_knowledgebase/People/%D0%91%D1%80%D0%B0%D0%B2/"
+      }
+    },
+    {
+      "data": {
+        "id": "person:Оревков",
+        "label": "Оревков",
+        "type": "person",
+        "url": "/FPMI_knowledgebase/People/%D0%9E%D1%80%D0%B5%D0%B2%D0%BA%D0%BE%D0%B2/"
+      }
+    },
+    {
+      "data": {
+        "id": "person:Яковлев",
+        "label": "Яковлев",
+        "type": "person",
+        "url": "/FPMI_knowledgebase/People/%D0%AF%D0%BA%D0%BE%D0%B2%D0%BB%D0%B5%D0%B2/"
+      }
+    },
+    {
+      "data": {
+        "id": "person:Шабанов",
+        "label": "Шабанов",
+        "type": "person",
+        "url": "/FPMI_knowledgebase/People/%D0%A8%D0%B0%D0%B1%D0%B0%D0%BD%D0%BE%D0%B2/"
+      }
+    },
+    {
+      "data": {
+        "id": "person:Панов",
+        "label": "Панов",
+        "type": "person",
+        "url": "/FPMI_knowledgebase/People/%D0%9F%D0%B0%D0%BD%D0%BE%D0%B2/"
+      }
+    },
+    {
+      "data": {
+        "id": "person:Клименко",
+        "label": "Клименко",
+        "type": "person",
+        "url": "/FPMI_knowledgebase/People/%D0%9A%D0%BB%D0%B8%D0%BC%D0%B5%D0%BD%D0%BA%D0%BE/"
+      }
+    },
+    {
+      "data": {
+        "id": "person:Грибанов",
+        "label": "Грибанов",
+        "type": "person",
+        "url": "/FPMI_knowledgebase/People/%D0%93%D1%80%D0%B8%D0%B1%D0%B0%D0%BD%D0%BE%D0%B2/"
+      }
+    },
+    {
+      "data": {
+        "id": "person:Амосов",
+        "label": "Амосов",
+        "type": "person",
+        "url": "/FPMI_knowledgebase/People/%D0%90%D0%BC%D0%BE%D1%81%D0%BE%D0%B2/"
+      }
+    },
+    {
+      "data": {
+        "id": "person:Онищенко",
+        "label": "Онищенко",
+        "type": "person",
+        "url": "/FPMI_knowledgebase/People/%D0%9E%D0%BD%D0%B8%D1%89%D0%B5%D0%BD%D0%BA%D0%BE/"
+      }
+    },
+    {
+      "data": {
+        "id": "person:Ковалёв",
+        "label": "Ковалёв",
+        "type": "person",
+        "url": "/FPMI_knowledgebase/People/%D0%9A%D0%BE%D0%B2%D0%B0%D0%BB%D1%91%D0%B2/"
+      }
+    },
+    {
+      "data": {
+        "id": "person:Бондал",
+        "label": "Бондал",
+        "type": "person",
+        "url": "/FPMI_knowledgebase/People/%D0%91%D0%BE%D0%BD%D0%B4%D0%B0%D0%BB/"
+      }
+    },
+    {
+      "data": {
+        "id": "person:Блудов",
+        "label": "Блудов",
+        "type": "person",
+        "url": "/FPMI_knowledgebase/People/%D0%91%D0%BB%D1%83%D0%B4%D0%BE%D0%B2/"
+      }
+    },
+    {
+      "data": {
+        "id": "person:Купавский",
+        "label": "Купавский",
+        "type": "person",
+        "url": "/FPMI_knowledgebase/People/%D0%9A%D1%83%D0%BF%D0%B0%D0%B2%D1%81%D0%BA%D0%B8%D0%B9/"
+      }
+    },
+    {
+      "data": {
+        "id": "person:Кудеров",
+        "label": "Кудеров",
+        "type": "person",
+        "url": "/FPMI_knowledgebase/People/%D0%9A%D1%83%D0%B4%D0%B5%D1%80%D0%BE%D0%B2/"
+      }
+    },
+    {
+      "data": {
+        "id": "person:Жуковский",
+        "label": "Жуковский",
+        "type": "person",
+        "url": "/FPMI_knowledgebase/People/%D0%96%D1%83%D0%BA%D0%BE%D0%B2%D1%81%D0%BA%D0%B8%D0%B9/"
+      }
+    },
+    {
+      "data": {
+        "id": "person:Юдин",
+        "label": "Юдин",
+        "type": "person",
+        "url": "/FPMI_knowledgebase/People/%D0%AE%D0%B4%D0%B8%D0%BD/"
+      }
+    },
+    {
+      "data": {
+        "id": "person:Байнаев-Мангилев",
+        "label": "Байнаев-Мангилев",
+        "type": "person",
+        "url": "/FPMI_knowledgebase/People/%D0%91%D0%B0%D0%B9%D0%BD%D0%B0%D0%B5%D0%B2-%D0%9C%D0%B0%D0%BD%D0%B3%D0%B8%D0%BB%D0%B5%D0%B2/"
+      }
+    },
+    {
+      "data": {
+        "id": "person:Мудров",
+        "label": "Мудров",
+        "type": "person",
+        "url": "/FPMI_knowledgebase/People/%D0%9C%D1%83%D0%B4%D1%80%D0%BE%D0%B2/"
+      }
+    },
+    {
+      "data": {
+        "id": "person:Мелехин",
+        "label": "Мелехин",
+        "type": "person",
+        "url": "/FPMI_knowledgebase/People/%D0%9C%D0%B5%D0%BB%D0%B5%D1%85%D0%B8%D0%BD/"
+      }
+    },
+    {
+      "data": {
+        "id": "person:Горбов",
+        "label": "Горбов",
+        "type": "person",
+        "url": "/FPMI_knowledgebase/People/%D0%93%D0%BE%D1%80%D0%B1%D0%BE%D0%B2/"
       }
     }
   ],
   "edges": [
     {
       "data": {
-        "source": "lab-ml",
-        "target": "analysis",
+        "id": "e:0",
+        "source": "lab:ЦФМ",
+        "target": "area:Топология",
         "type": "belongs_to",
         "weight": 1
       }
     },
     {
       "data": {
-        "source": "lab-ml",
-        "target": "lab-pde",
+        "id": "e:1",
+        "source": "lab:ЦФМ",
+        "target": "area:Алгебра",
+        "type": "belongs_to",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:2",
+        "source": "lab:Лаборатория воплощенного искусственного интеллекта",
+        "target": "area:Робототехника",
+        "type": "belongs_to",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:3",
+        "source": "lab:Лаборатория воплощенного искусственного интеллекта",
+        "target": "lab:Лаборатория интеллектуального транспорта",
         "type": "collaboration",
         "weight": 1
       }
     },
     {
       "data": {
-        "source": "lab-pde",
-        "target": "analysis",
+        "id": "e:4",
+        "source": "lab:Лаборатория воплощенного искусственного интеллекта",
+        "target": "lab:Лаборатория когнитивных динамических систем",
+        "type": "collaboration",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:5",
+        "source": "lab:Лаборатория интеллектуального транспорта",
+        "target": "area:Робототехника",
         "type": "belongs_to",
         "weight": 1
       }
     },
     {
       "data": {
-        "source": "kim",
-        "target": "lab-ml",
+        "id": "e:6",
+        "source": "lab:Лаборатория интеллектуального транспорта",
+        "target": "lab:Лаборатория когнитивных динамических систем",
+        "type": "collaboration",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:7",
+        "source": "lab:CombGeo",
+        "target": "area:Комбинаторика",
+        "type": "belongs_to",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:8",
+        "source": "lab:CombGeo",
+        "target": "area:Топология",
+        "type": "belongs_to",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:9",
+        "source": "lab:Лаборатория когнитивных динамических систем",
+        "target": "area:Робототехника",
+        "type": "belongs_to",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:10",
+        "source": "area:Робототехника",
+        "target": "area:Топология",
+        "type": "collaboration",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:11",
+        "source": "area:Топология",
+        "target": "area:Комбинаторика",
+        "type": "collaboration",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:12",
+        "source": "area:Топология",
+        "target": "area:Алгебра",
+        "type": "collaboration",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:13",
+        "source": "person:Скрынник",
+        "target": "lab:Лаборатория воплощенного искусственного интеллекта",
         "type": "member_of",
         "weight": 1
       }
     },
     {
       "data": {
-        "source": "ivanov",
-        "target": "lab-pde",
+        "id": "e:14",
+        "source": "person:Скрынник",
+        "target": "lab:Лаборатория интеллектуального транспорта",
+        "type": "member_of",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:15",
+        "source": "person:Скрынник",
+        "target": "lab:Лаборатория когнитивных динамических систем",
+        "type": "member_of",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:16",
+        "source": "person:Скрынник",
+        "target": "person:Панов",
+        "type": "collaboration",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:17",
+        "source": "person:Скрынник",
+        "target": "person:Юдин",
+        "type": "collaboration",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:18",
+        "source": "person:Скрынник",
+        "target": "person:Ковалёв",
+        "type": "collaboration",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:19",
+        "source": "person:Линок",
+        "target": "lab:Лаборатория интеллектуального транспорта",
+        "type": "member_of",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:20",
+        "source": "person:Линок",
+        "target": "person:Юдин",
+        "type": "collaboration",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:21",
+        "source": "person:Макаров",
+        "target": "lab:Лаборатория воплощенного искусственного интеллекта",
+        "type": "member_of",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:22",
+        "source": "person:Макаров",
+        "target": "lab:Лаборатория интеллектуального транспорта",
+        "type": "member_of",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:23",
+        "source": "person:Макаров",
+        "target": "lab:Лаборатория когнитивных динамических систем",
+        "type": "member_of",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:24",
+        "source": "person:Макаров",
+        "target": "person:Панов",
+        "type": "collaboration",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:25",
+        "source": "person:Макаров",
+        "target": "person:Юдин",
+        "type": "collaboration",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:26",
+        "source": "person:Макаров",
+        "target": "person:Ковалёв",
+        "type": "collaboration",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:27",
+        "source": "person:Воронов",
+        "target": "lab:CombGeo",
+        "type": "member_of",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:28",
+        "source": "person:Воронов",
+        "target": "person:Купавский",
+        "type": "collaboration",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:29",
+        "source": "person:Шокуров",
+        "target": "lab:ЦФМ",
+        "type": "member_of",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:30",
+        "source": "person:Шокуров",
+        "target": "person:Бондал",
+        "type": "collaboration",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:31",
+        "source": "person:Брав",
+        "target": "lab:ЦФМ",
+        "type": "member_of",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:32",
+        "source": "person:Брав",
+        "target": "person:Бондал",
+        "type": "collaboration",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:33",
+        "source": "person:Оревков",
+        "target": "lab:ЦФМ",
+        "type": "member_of",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:34",
+        "source": "person:Оревков",
+        "target": "person:Бондал",
+        "type": "collaboration",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:35",
+        "source": "person:Яковлев",
+        "target": "lab:Лаборатория воплощенного искусственного интеллекта",
+        "type": "member_of",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:36",
+        "source": "person:Яковлев",
+        "target": "person:Юдин",
+        "type": "collaboration",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:37",
+        "source": "person:Яковлев",
+        "target": "person:Панов",
+        "type": "collaboration",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:38",
+        "source": "person:Яковлев",
+        "target": "person:Ковалёв",
+        "type": "collaboration",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:39",
+        "source": "person:Шабанов",
+        "target": "lab:CombGeo",
+        "type": "member_of",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:40",
+        "source": "person:Шабанов",
+        "target": "person:Купавский",
+        "type": "collaboration",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:41",
+        "source": "person:Панов",
+        "target": "lab:Лаборатория когнитивных динамических систем",
+        "type": "member_of",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:42",
+        "source": "person:Панов",
+        "target": "person:Юдин",
+        "type": "collaboration",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:43",
+        "source": "person:Панов",
+        "target": "person:Ковалёв",
+        "type": "collaboration",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:44",
+        "source": "person:Панов",
+        "target": "person:Кудеров",
+        "type": "collaboration",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:45",
+        "source": "person:Панов",
+        "target": "person:Горбов",
+        "type": "collaboration",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:46",
+        "source": "person:Панов",
+        "target": "person:Байнаев-Мангилев",
+        "type": "collaboration",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:47",
+        "source": "person:Панов",
+        "target": "person:Онищенко",
+        "type": "collaboration",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:48",
+        "source": "person:Клименко",
+        "target": "lab:CombGeo",
+        "type": "member_of",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:49",
+        "source": "person:Клименко",
+        "target": "person:Купавский",
+        "type": "collaboration",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:50",
+        "source": "person:Грибанов",
+        "target": "lab:CombGeo",
+        "type": "member_of",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:51",
+        "source": "person:Грибанов",
+        "target": "person:Купавский",
+        "type": "collaboration",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:52",
+        "source": "person:Амосов",
+        "target": "lab:ЦФМ",
+        "type": "member_of",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:53",
+        "source": "person:Амосов",
+        "target": "person:Бондал",
+        "type": "collaboration",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:54",
+        "source": "person:Онищенко",
+        "target": "lab:Лаборатория когнитивных динамических систем",
+        "type": "member_of",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:55",
+        "source": "person:Ковалёв",
+        "target": "lab:Лаборатория воплощенного искусственного интеллекта",
+        "type": "member_of",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:56",
+        "source": "person:Ковалёв",
+        "target": "person:Юдин",
+        "type": "collaboration",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:57",
+        "source": "person:Ковалёв",
+        "target": "person:Кудеров",
+        "type": "collaboration",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:58",
+        "source": "person:Бондал",
+        "target": "lab:ЦФМ",
+        "type": "member_of",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:59",
+        "source": "person:Бондал",
+        "target": "person:Мудров",
+        "type": "collaboration",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:60",
+        "source": "person:Блудов",
+        "target": "lab:CombGeo",
+        "type": "member_of",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:61",
+        "source": "person:Блудов",
+        "target": "person:Купавский",
+        "type": "collaboration",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:62",
+        "source": "person:Купавский",
+        "target": "lab:CombGeo",
+        "type": "member_of",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:63",
+        "source": "person:Купавский",
+        "target": "person:Жуковский",
+        "type": "collaboration",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:64",
+        "source": "person:Кудеров",
+        "target": "lab:Лаборатория воплощенного искусственного интеллекта",
+        "type": "member_of",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:65",
+        "source": "person:Кудеров",
+        "target": "lab:Лаборатория интеллектуального транспорта",
+        "type": "member_of",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:66",
+        "source": "person:Кудеров",
+        "target": "lab:Лаборатория когнитивных динамических систем",
+        "type": "member_of",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:67",
+        "source": "person:Кудеров",
+        "target": "person:Юдин",
+        "type": "collaboration",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:68",
+        "source": "person:Жуковский",
+        "target": "lab:CombGeo",
+        "type": "member_of",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:69",
+        "source": "person:Жуковский",
+        "target": "person:Воронов",
+        "type": "collaboration",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:70",
+        "source": "person:Юдин",
+        "target": "lab:Лаборатория интеллектуального транспорта",
+        "type": "member_of",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:71",
+        "source": "person:Юдин",
+        "target": "person:Мелехин",
+        "type": "collaboration",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:72",
+        "source": "person:Байнаев-Мангилев",
+        "target": "lab:Лаборатория когнитивных динамических систем",
+        "type": "member_of",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:73",
+        "source": "person:Мудров",
+        "target": "lab:ЦФМ",
+        "type": "member_of",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:74",
+        "source": "person:Мелехин",
+        "target": "lab:Лаборатория интеллектуального транспорта",
+        "type": "member_of",
+        "weight": 1
+      }
+    },
+    {
+      "data": {
+        "id": "e:75",
+        "source": "person:Горбов",
+        "target": "lab:Лаборатория когнитивных динамических систем",
         "type": "member_of",
         "weight": 1
       }

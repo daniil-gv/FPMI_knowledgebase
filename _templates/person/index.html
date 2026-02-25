@@ -17,11 +17,11 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.2">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.3">
     
     
       
-        <title>Person Name - Institute Knowledge Base</title>
+        <title>Person - Institute Knowledge Base</title>
       
     
     
@@ -98,7 +98,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Person Name
+              Person
             
           </span>
         </div>
@@ -268,7 +268,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../Areas/Analysis/" class="md-nav__link">
+      <a href="../../Areas/Analysis.md" class="md-nav__link">
         
   
   
@@ -460,7 +460,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../People/Ivanov/" class="md-nav__link">
+      <a href="../../People/Ivanov.md" class="md-nav__link">
         
   
   
@@ -488,7 +488,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../People/Kim/" class="md-nav__link">
+      <a href="../../People/Kim.md" class="md-nav__link">
         
   
   
@@ -570,10 +570,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
+  <a href="#position" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Роль
+        Position
       
     </span>
   </a>
@@ -581,10 +581,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
+  <a href="#expertise" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Экспертиза
+        Expertise
       
     </span>
   </a>
@@ -608,24 +608,79 @@
 
 
 
-<h1 id="title">{{title}}</h1>
-<h2 id="_1">Роль</h2>
-<ul>
-<li>...</li>
-</ul>
-<h2 id="_2">Экспертиза</h2>
-<ul>
-<li>...</li>
-</ul>
+<p>&lt;%*
+const title = await tp.system.prompt("Имя Фамилия?");
+if (!title) return;</p>
+<p>await tp.file.rename(title);</p>
+<p>// -------- helpers --------
+const mdFiles = () =&gt; app.vault.getMarkdownFiles();
+const fm = (file) =&gt; app.metadataCache.getFileCache(file)?.frontmatter;
+const byType = (t) =&gt; mdFiles().filter(f =&gt; fm(f)?.type === t);
+const uniq = (arr) =&gt; [...new Set(arr)].filter(Boolean);</p>
+<p>const asArray = (v) =&gt; Array.isArray(v) ? v : (v ? [v] : []);
+const hasText = (arr, text) =&gt; asArray(arr).some(x =&gt; String(x).trim() === String(text).trim());</p>
+<p>async function pickOne(options, placeholder="Выбери") {
+  options = uniq(options).sort((a,b)=&gt;a.localeCompare(b,'ru'));
+  if (!options.length) return "";
+  return await tp.system.suggester(options, options, false, placeholder) || "";
+}
+async function pickMany(options, placeholder="Выбери (ESC чтобы закончить)") {
+  options = uniq(options).sort((a,b)=&gt;a.localeCompare(b,'ru'));
+  let left = [...options];
+  let picked = [];
+  while (left.length) {
+    const choice = await tp.system.suggester(left, left, false, placeholder);
+    if (!choice) break;
+    picked.push(choice);
+    left = left.filter(x =&gt; x !== choice);
+  }
+  return picked;
+}</p>
+<p>// -------- выбери лабораторию --------
+const labsFiles = byType("lab");
+const labNames = labsFiles.map(f =&gt; f.basename);
+const selectedLab = await pickOne(labNames, "Выбери лабораторию");</p>
+<p>// находим область выбранной лабы
+const selectedLabFile = labsFiles.find(f =&gt; f.basename === selectedLab);
+const selectedArea = selectedLabFile ? (asArray(fm(selectedLabFile)?.area)[0] || "") : "";</p>
+<p>// строим список лабораторий этой области
+const labsSameArea = labsFiles
+  .filter(f =&gt; hasText(fm(f)?.area, selectedArea))
+  .map(f =&gt; f.basename);</p>
+<p>// -------- кандидаты-люди: только из этой области --------
+const peopleFiles = byType("person");
+const peopleSameArea = peopleFiles
+  .filter(f =&gt; f.basename !== title)
+  .filter(f =&gt; {
+    const personLabs = asArray(fm(f)?.lab);        // у человека lab: [..]
+    return personLabs.some(l =&gt; labsSameArea.includes(String(l)));
+  })
+  .map(f =&gt; f.basename);</p>
+<p>const collaborates = await pickMany(
+  peopleSameArea,
+  selectedArea
+    ? <code>Коллаборации: люди из области "${selectedArea}"</code>
+    : <code>Коллаборации: люди (область не определена)</code>
+);</p>
+<p>// -------- YAML --------
+tR += <code>---
+type: person
+title: ${title}
+lab: ${selectedLab ?</code>[${selectedLab}]<code>:</code>[]<code>}
+collaborates_with: ${collaborates.length ?</code>[${collaborates.join(", ")}]<code>:</code>[]`}
+tags: [kb/person]</p>
+<hr />
+<h1 id="title">${title}</h1>
+<h2 id="position">Position</h2>
+<h2 id="expertise">Expertise</h2>
+<p>`;
+%&gt;</p>
 
 
 
 
 
 
-
-  
-  
 
 
 

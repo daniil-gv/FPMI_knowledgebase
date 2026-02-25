@@ -598,16 +598,17 @@
 
 
 <p>&lt;%*
-const title = await tp.system.prompt("Название области науки?");
-if (!title) return;</p>
-<p>await tp.file.rename(title);</p>
-<p>// helpers
-const mdFiles = () =&gt; app.vault.getMarkdownFiles();
-const fm = (file) =&gt; app.metadataCache.getFileCache(file)?.frontmatter;
-const byType = (t) =&gt; mdFiles().filter(f =&gt; fm(f)?.type === t);
-const uniq = (arr) =&gt; [...new Set(arr)].filter(Boolean);</p>
-<p>async function pickMany(options, placeholder="Выбери (ESC чтобы закончить)") {
-  options = uniq(options).sort((a,b)=&gt;a.localeCompare(b,'ru'));
+const title = await tp.system.prompt("Название области?");
+if (!title) return;
+await tp.file.rename(title);</p>
+<p>const files = app.vault.getMarkdownFiles();
+const fm = f =&gt; app.metadataCache.getFileCache(f)?.frontmatter;</p>
+<p>// ---- helpers ----
+const asArray = (v) =&gt; Array.isArray(v) ? v : (v ? [v] : []);
+const normalizeLinkText = (s) =&gt; String(s).replace(/^"+|"+$/g,"").trim(); // убираем кавычки
+const makeLinkString = (name) =&gt; <code>[[${name}]]</code>;
+const makeQuotedLinkString = (name) =&gt; <code>"[[${name}]]"</code>; // как у тебя</p>
+<p>async function pickMany(options, placeholder) {
   let left = [...options];
   let picked = [];
   while (left.length) {
@@ -618,17 +619,40 @@ const uniq = (arr) =&gt; [...new Set(arr)].filter(Boolean);</p>
   }
   return picked;
 }</p>
-<p>const areas = byType("area").map(f =&gt; f.basename).filter(n =&gt; n !== title);
-const collaborators = await pickMany(areas, "Добавить связанные области");</p>
-<p>tR += <code>---
+<p>// ---- собрать список областей ----
+const areaFiles = files.filter(f =&gt; fm(f)?.type === "area");
+const areaNames = areaFiles
+  .map(f =&gt; f.basename)
+  .filter(n =&gt; n !== title)
+  .sort((a,b)=&gt;a.localeCompare(b,'ru'));</p>
+<p>// ---- выбрать коллаборации ----
+const collaborators = await pickMany(areaNames, "Коллаборации (области)");
+const collaboratorsLinks = collaborators.map(x =&gt; makeQuotedLinkString(x));</p>
+<p>// ---- записать текущую заметку ----
+tR += `---
 type: area
-title: "${title}"
-collaborates_with: [${collaborators.map(a =&gt;</code>"${a}"`).join(", ")}]
-tags: ["kb/area"]</p>
+title: ${title}
+collaborates_with: [${collaboratorsLinks.join(", ")}]
+tags: [kb/area]</p>
 <hr />
 <h1 id="title">${title}</h1>
 <h2 id="description">Description</h2>
-<p>`;
+<p>`;</p>
+<p>// ---- двустороннее прокидывание ----
+const thisLink = makeLinkString(title);
+const findAreaFileByName = (name) =&gt; areaFiles.find(f =&gt; f.basename === name);</p>
+<p>for (const otherName of collaborators) {
+  const otherFile = findAreaFileByName(otherName);
+  if (!otherFile) continue;</p>
+<p>await app.fileManager.processFrontMatter(otherFile, (frontmatter) =&gt; {
+    let cw = asArray(frontmatter.collaborates_with).map(normalizeLinkText);
+    if (!cw.includes(thisLink)) {
+      cw.push(thisLink);
+    }</p>
+<pre><code>frontmatter.collaborates_with = cw.map(x =&gt; `${x}`);
+</code></pre>
+<p>});
+}
 %&gt;</p>
 
 

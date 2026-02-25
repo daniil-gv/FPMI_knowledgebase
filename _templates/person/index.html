@@ -610,22 +610,17 @@
 
 <p>&lt;%*
 const title = await tp.system.prompt("Имя Фамилия?");
-if (!title) return;</p>
-<p>await tp.file.rename(title);</p>
-<p>// -------- helpers --------
-const mdFiles = () =&gt; app.vault.getMarkdownFiles();
-const fm = (file) =&gt; app.metadataCache.getFileCache(file)?.frontmatter;
-const byType = (t) =&gt; mdFiles().filter(f =&gt; fm(f)?.type === t);
-const uniq = (arr) =&gt; [...new Set(arr)].filter(Boolean);</p>
-<p>const asArray = (v) =&gt; Array.isArray(v) ? v : (v ? [v] : []);
-const hasText = (arr, text) =&gt; asArray(arr).some(x =&gt; String(x).trim() === String(text).trim());</p>
-<p>async function pickOne(options, placeholder="Выбери") {
-  options = uniq(options).sort((a,b)=&gt;a.localeCompare(b,'ru'));
-  if (!options.length) return "";
-  return await tp.system.suggester(options, options, false, placeholder) || "";
-}
-async function pickMany(options, placeholder="Выбери (ESC чтобы закончить)") {
-  options = uniq(options).sort((a,b)=&gt;a.localeCompare(b,'ru'));
+if (!title) return;
+await tp.file.rename(title);</p>
+<p>const files = app.vault.getMarkdownFiles();
+const fm = f =&gt; app.metadataCache.getFileCache(f)?.frontmatter;</p>
+<p>// ---- helpers ----
+const asArray = (v) =&gt; Array.isArray(v) ? v : (v ? [v] : []);
+const stripQuotes = (s) =&gt; String(s).replace(/^"+|"+$/g, "").trim(); // убрать внешние кавычки
+const linkText = (s) =&gt; stripQuotes(s).replace(/^[[|]]$/g, "").trim(); // "Имя" из [[Имя]]
+const makeLink = (name) =&gt; <code>[[${name}]]</code>;
+const makeQuotedLink = (name) =&gt; <code>"[[${name}]]"</code>;</p>
+<p>async function pickMany(options, placeholder) {
   let left = [...options];
   let picked = [];
   while (left.length) {
@@ -636,44 +631,66 @@ async function pickMany(options, placeholder="Выбери (ESC чтобы за�
   }
   return picked;
 }</p>
-<p>// -------- выбери лабораторию --------
-const labsFiles = byType("lab");
-const labNames = labsFiles.map(f =&gt; f.basename);
-const selectedLab = await pickOne(labNames, "Выбери лабораторию");</p>
-<p>// находим область выбранной лабы
-const selectedLabFile = labsFiles.find(f =&gt; f.basename === selectedLab);
-const selectedArea = selectedLabFile ? (asArray(fm(selectedLabFile)?.area)[0] || "") : "";</p>
-<p>// строим список лабораторий этой области
-const labsSameArea = labsFiles
-  .filter(f =&gt; hasText(fm(f)?.area, selectedArea))
-  .map(f =&gt; f.basename);</p>
-<p>// -------- кандидаты-люди: только из этой области --------
-const peopleFiles = byType("person");
-const peopleSameArea = peopleFiles
-  .filter(f =&gt; f.basename !== title)
-  .filter(f =&gt; {
-    const personLabs = asArray(fm(f)?.lab);        // у человека lab: [..]
-    return personLabs.some(l =&gt; labsSameArea.includes(String(l)));
-  })
-  .map(f =&gt; f.basename);</p>
-<p>const collaborates = await pickMany(
-  peopleSameArea,
-  selectedArea
-    ? <code>Коллаборации: люди из области "${selectedArea}"</code>
-    : <code>Коллаборации: люди (область не определена)</code>
+<p>// ---- lists ----
+const labFiles = files.filter(f =&gt; fm(f)?.type === "lab");
+const labNames = labFiles
+  .map(f =&gt; f.basename)
+  .sort((a,b)=&gt;a.localeCompare(b,'ru'));</p>
+<p>if (!labNames.length) { new Notice("Сначала создай хотя бы одну лабораторию (type: lab)"); return; }</p>
+<p>const peopleFiles = files.filter(f =&gt; fm(f)?.type === "person");
+const peopleNames = peopleFiles
+  .map(f =&gt; f.basename)
+  .filter(n =&gt; n !== title)
+  .sort((a,b)=&gt;a.localeCompare(b,'ru'));</p>
+<p>// ---- choose relations ----
+const selectedLab = await tp.system.suggester(labNames, labNames, false, "Выбери лабораторию");</p>
+<p>// (опционально) фильтр коллабораций: люди только из той же лаборатории или любые
+const scope = await tp.system.suggester(
+  ["Только люди этой лаборатории", "Любые люди"],
+  ["same", "all"],
+  false,
+  "Каких людей показывать в коллаборациях?"
 );</p>
-<p>// -------- YAML --------
-tR += <code>---
+<p>let peopleCandidates = peopleNames;</p>
+<p>if (scope === "same" &amp;&amp; selectedLab) {
+  peopleCandidates = peopleFiles
+    .filter(f =&gt; f.basename !== title)
+    .filter(f =&gt; {
+      const labs = asArray(fm(f)?.lab).map(linkText); // lab: ["[[X]]"]
+      return labs.includes(selectedLab);
+    })
+    .map(f =&gt; f.basename)
+    .sort((a,b)=&gt;a.localeCompare(b,'ru'));
+}</p>
+<p>const collaborators = await pickMany(peopleCandidates, "Коллаборации (люди), ESC чтобы закончить");
+const collaboratorsLinks = collaborators.map(x =&gt; makeQuotedLink(x));</p>
+<p>tR += <code>---
 type: person
 title: ${title}
-lab: ${selectedLab ?</code>[${selectedLab}]<code>:</code>[]<code>}
-collaborates_with: ${collaborates.length ?</code>[${collaborates.join(", ")}]<code>:</code>[]`}
+lab: ${selectedLab ?</code>["[[${selectedLab}]]"]<code>:</code>[]`}
+collaborates_with: [${collaboratorsLinks.join(", ")}]
 tags: [kb/person]</p>
 <hr />
 <h1 id="title">${title}</h1>
 <h2 id="position">Position</h2>
 <h2 id="expertise">Expertise</h2>
-<p>`;
+<p>`;</p>
+<p>const thisLink = makeLink(title);
+const findPersonFile = (name) =&gt; peopleFiles.find(f =&gt; f.basename === name);</p>
+<p>for (const otherName of collaborators) {
+  const otherFile = findPersonFile(otherName);
+  if (!otherFile) continue;</p>
+<p>await app.fileManager.processFrontMatter(otherFile, (frontmatter) =&gt; {
+    let cw = asArray(frontmatter.collaborates_with).map(stripQuotes);
+    const normalized = cw.map(linkText);</p>
+<pre><code>if (!normalized.includes(title)) {
+  cw.push(thisLink);
+}
+
+frontmatter.collaborates_with = cw.map(x =&gt; `${x}`);
+</code></pre>
+<p>});
+}
 %&gt;</p>
 
 

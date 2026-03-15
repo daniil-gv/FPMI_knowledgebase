@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Интерактивная карта учебного плана</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .course-card {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            border-left-width: 5px;
+        }
+
+        .course-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .semester-column {
+            min-width: 320px;
+            position: relative;
+        }
+
+        .semester-column:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: -20px;
+            height: 100%;
+            width: 1px;
+            border-right: 2px dashed #cbd5e1;
+            opacity: 0.6;
+        }
+
+        .segmented-btn.active {
+            background: #0f172a;
+            color: white;
+            box-shadow: 0 6px 18px rgba(15, 23, 42, 0.15);
+        }
+
+        .segmented-btn {
+            transition: all 0.2s ease;
+        }
+
+        .block-card {
+            border-left-width: 5px;
+        }
+    </style>
+</head>
+<body class="text-slate-800 h-screen flex flex-col">
+
+    <header class="bg-white border-b border-slate-200 px-6 py-3 shrink-0 z-20 shadow-sm">
+        <div class="flex flex-col gap-3 2xl:flex-row 2xl:items-center 2xl:justify-between">
+            <div class="flex items-center gap-4 min-w-0">
+                <div class="min-w-0">
+                    <h1 id="page-title" class="text-xl font-bold text-slate-900 tracking-tight leading-tight">Учебный план</h1>
+                    <p id="page-subtitle" class="text-xs text-slate-500 mt-0.5 truncate">Выберите уровень обучения и трек</p>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-3 2xl:flex-row 2xl:items-center 2xl:justify-end 2xl:gap-4">
+                <div class="flex flex-wrap gap-2">
+                    <div class="bg-slate-100 p-1 rounded-2xl flex gap-1 w-fit" id="level-switch"></div>
+                    <div class="bg-slate-100 p-1 rounded-2xl flex gap-1 w-fit" id="track-switch"></div>
+                </div>
+
+                <div class="flex flex-wrap gap-x-4 gap-y-2 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                    <div class="flex items-center gap-2">
+                        <div class="w-2.5 h-2.5 rounded-sm bg-blue-500"></div>
+                        <span>Математика</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-2.5 h-2.5 rounded-sm bg-emerald-500"></div>
+                        <span>Computer Science</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-2.5 h-2.5 rounded-sm bg-purple-500"></div>
+                        <span>Machine Learning</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-2.5 h-2.5 rounded-sm bg-orange-400"></div>
+                        <span>Воркшоп</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+
+
+    <main class="flex-1 overflow-auto bg-[#f1f5f9] p-6">
+        <div class="flex gap-10 items-start" id="board"></div>
+        <div id="empty-state" class="hidden max-w-xl mx-auto mt-16 bg-white border border-slate-200 rounded-3xl p-8 text-center shadow-sm">
+            <div class="w-14 h-14 mx-auto rounded-2xl bg-slate-100 flex items-center justify-center mb-4">
+                <i data-lucide="book-open" class="w-7 h-7 text-slate-500"></i>
+            </div>
+            <h3 class="text-xl font-bold text-slate-900 mb-2">Для этого выбора пока нет предметов</h3>
+            <p class="text-slate-500">Попробуйте переключить уровень обучения или специализацию.</p>
+        </div>
+    </main>
+
+    <div id="course-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden justify-center items-center z-50 opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 transform scale-95 transition-transform duration-300 overflow-hidden" id="modal-content-wrapper">
+            <div class="p-8 relative">
+                <button id="close-modal" class="absolute top-6 right-6 text-slate-400 hover:text-slate-700 transition-colors">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+
+                <div class="mb-4">
+                    <span id="modal-type-badge" class="px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-widest"></span>
+                </div>
+
+                <h2 id="modal-title" class="text-2xl font-bold text-slate-900 mb-6 leading-tight"></h2>
+
+                <div class="space-y-5 mb-8">
+                    <div class="flex items-start gap-3">
+                        <i data-lucide="graduation-cap" class="w-5 h-5 text-slate-400 shrink-0"></i>
+                        <div>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wide">Уровень и трек</p>
+                            <p id="modal-level-track" class="text-slate-700 font-medium"></p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <i data-lucide="building-2" class="w-5 h-5 text-slate-400 shrink-0"></i>
+                        <div>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wide">Реализующая кафедра</p>
+                            <p id="modal-department" class="text-slate-700 font-medium"></p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <i data-lucide="info" class="w-5 h-5 text-slate-400 shrink-0"></i>
+                        <div>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wide">Статус и формат</p>
+                            <p id="modal-status-format" class="text-slate-700 font-medium"></p>
+                        </div>
+                    </div>
+                    <div id="modal-options-block" class="hidden flex items-start gap-3">
+                        <i data-lucide="list-tree" class="w-5 h-5 text-slate-400 shrink-0"></i>
+                        <div>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wide">Дисциплины внутри блока</p>
+                            <div id="modal-options-list" class="mt-2 space-y-2"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end pt-6 border-t border-slate-100">
+                    <a href="#" id="modal-link" target="_blank" class="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-xl font-semibold transition-all shadow-md">
+                        <i data-lucide="file-text" class="w-4 h-4"></i> Открыть РУП
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const categoryThemes = {
+            math: { border: 'border-blue-500', bg: 'bg-blue-50/50', badge: 'bg-blue-100 text-blue-700', label: 'Математика' },
+            cs: { border: 'border-emerald-500', bg: 'bg-emerald-50/50', badge: 'bg-emerald-100 text-emerald-700', label: 'Computer Science' },
+            ml: { border: 'border-purple-500', bg: 'bg-purple-50/50', badge: 'bg-purple-100 text-purple-700', label: 'Machine Learning' },
+            workshop: { border: 'border-orange-400', bg: 'bg-orange-50/50', badge: 'bg-orange-100 text-orange-700', label: 'Воркшоп' },
+        };
+
+        const curriculumData = {
+            "бакалавриат": {
+                "теоретический": [
+                    {
+                        "semester": 6,
+                        "title": "6 Семестр",
+                        "courses": [
+                            {
+                                "title": "Современное компьютерное зрение",
+                                "category": "ml",
+                                "status": "обязательный",
+                                "department": "Кафедра математики искусственного интеллекта",
+                                "format": "уточняется",
+                                "rup": "#"
+                            },
+                            {
+                                "title": "Матричный анализ и вычислительная алгебра",
+                                "category": "math",
+                                "status": "обязательный",
+                                "department": "Кафедра математических основ управления",
+                                "format": "уточняется",
+                                "rup": "#"
+                            }
+                        ]
+                    },
+                    {
+                        "semester": 7,
+                        "title": "7 Семестр",
+                        "courses": [
+                            {
+                                "title": "Статистическая теория машинного обучения I",
+                                "category": "math",
+                                "status": "обязательный",
+                                "department": "Кафедра математических основ управления",
+                                "format": "уточняется",
+                                "rup": "#"
+                            },
+                            {
+                                "title": "Основы обучения с подкреплением",
+                                "category": "ml",
+                                "status": "обязательный",
+                                "department": "Кафедра математики искусственного интеллекта",
+                                "format": "уточняется",
+                                "rup": "#"
+                            },
+                            {
+                                "title": "Альтернативные архитектуры и методы в ИИ (воркшоп)",
+                                "category": "workshop",
+                                "status": "обязательный",
+                                "department": "Кафедра математики искусственного интеллекта",
+                                "format": "уточняется",
+                                "rup": "#"
+                            }
+                        ]
+                    },
+                    {
+                        "semester": 8,
+                        "title": "8 Семестр",
+                        "courses": [
+                            {
+                                "title": "Статистическая теория машинного обучения II",
+                                "category": "math",
+                                "status": "обязательный",
+                                "department": "Кафедра математических основ управления",
+                                "format": "уточняется",
+                                "rup": "#"
+                            },
+                            {
+                                "title": "Теория функций и архитектуры в ИИ",
+                                "category": "math",
+                                "status": "обязательный",
+                                "department": "Кафедра математики искусственного интеллекта",
+                                "format": "уточняется",
+                                "rup": "#"
+                            },
+                            {
+                                "title": "Логика, дискретные алгоритмы и ML",
+                                "category": "math",
+                                "status": "обязательный",
+                                "department": "Кафедра математики искусственного интеллекта",
+                                "format": "уточняется",
+                                "rup": "#"
+                            }
+                        ]
+                    }
+                ],
+                "практический": [
+                    {
+                        "semester": 6,
+                        "title": "6 Семестр",
+                        "courses": [
+                            {
+                                "title": "Современное компьютерное зрение",
+                                "category": "ml",
+                                "status": "обязательный",
+                                "department": "Кафедра математики искусственного интеллекта",
+                                "format": "уточняется",
+                                "rup": "#"
+                            },
+                            {
+                                "title": "Матричный анализ и вычислительная алгебра",
+                                "category": "math",
+                                "status": "обязательный",
+                                "department": "Кафедра математических основ управления",
+                                "format": "уточняется",
+                                "rup": "#"
+                            }
+                        ]
+                    },
+                    {
+                        "semester": 7,
+                        "title": "7 Семестр",
+                        "courses": [
+                            {
+                                "title": "Статистическая теория машинного обучения I",
+                                "category": "math",
+                                "status": "обязательный",
+                                "department": "Кафедра математических основ управления",
+                                "format": "уточняется",
+                                "rup": "#"
+                            },
+                            {
+                                "title": "Прикладная статистика и методология эксперимента",
+                                "category": "math",
+                                "status": "обязательный",
+                                "department": "Кафедра дискретной математики",
+                                "format": "уточняется",
+                                "rup": "#"
+                            },
+                            {
+                                "title": "Альтернативные архитектуры и методы в ИИ (воркшоп)",
+                                "category": "workshop",
+                                "status": "обязательный",
+                                "department": "Кафедра математики искусственного интеллекта",
+                                "format": "уточняется",
+                                "rup": "#"
+                            }
+                        ]
+                    },
+                    {
+                        "semester": 8,
+                        "title": "8 Семестр",
+                        "courses": [
+                            {
+                                "title": "Рекомендательные системы",
+                                "category": "ml",
+                                "status": "обязательный",
+                                "department": "Кафедра математики искусственного интеллекта",
+                                "format": "уточняется",
+                                "rup": "#"
+                            },
+                            {
+                                "title": "Эффективные системы глубинного обучения",
+                                "category": "cs",
+                                "status": "обязательный",
+                                "department": "Кафедра математики искусственного интеллекта",
+                                "format": "уточняется",
+                                "rup": "#"
+                            },
+                            {
+                                "title": "Агенты: обучение, мультиагентные системы, ризонинг, автономия (воркшоп)",
+                                "category": "workshop",
+                                "status": "обязательный",
+                                "department": "Кафедра математики искусственного интеллекта",
+                                "format": "уточняется",
+                                "rup": "#"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "магистратура": {
+                "теоретический": [
+                    {
+                        "semester": 9,
+                        "title": "9 Семестр",
+                        "courses": [
+                            { "title": "Статистическая теория машинного обучения I", "category": "math", "status": "обязательный", "department": "Кафедра математических основ управления", "format": "уточняется", "rup": "#" },
+                            { "title": "Блок по выбору (1 из 2)", "category": "workshop", "status": "по выбору", "department": "—", "format": "уточняется", "rup": "#" },
+                            { "title": "Основы обучения с подкреплением", "category": "ml", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Математика больших данных", "category": "math", "status": "обязательный", "department": "Кафедра математических основ управления", "format": "уточняется", "rup": "#" },
+                            { "title": "Блок по выбору (1 из 2)", "category": "workshop", "status": "по выбору", "department": "—", "format": "уточняется", "rup": "#" },
+                            { "title": "Теория информации: приложения к ИИ", "category": "math", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Графовые нейронные сети", "category": "ml", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Блок по выбору (1 из 2)", "category": "workshop", "status": "по выбору", "department": "—", "format": "уточняется", "rup": "#" },
+                            { "title": "Теория оптимизации", "category": "math", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Методы оптимизации в задачах машинного обучения", "category": "math", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Прикладная статистика и теория эксперимента", "category": "math", "status": "обязательный", "department": "Кафедра дискретной математики", "format": "уточняется", "rup": "#" }
+                        ]
+                    },
+                    {
+                        "semester": 10,
+                        "title": "10 Семестр",
+                        "courses": [
+                            { "title": "Логика, дискретные алгоритмы и ML", "category": "math", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Академическое письмо", "category": "ml", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Блок по выбору (1 из 2)", "category": "workshop", "status": "по выбору", "department": "—", "format": "уточняется", "rup": "#" },
+                            { "title": "Выразительность трансформеров", "category": "ml", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Рандомизированные алгоритмы линейной алгебры", "category": "ml", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Теория функций и архитектуры в ИИ", "category": "math", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Матричный анализ и вычислительная алгебра", "category": "math", "status": "обязательный", "department": "Кафедра математических основ управления", "format": "уточняется", "rup": "#" }
+                        ]
+                    },
+                    {
+                        "semester": 11,
+                        "title": "11 Семестр",
+                        "courses": [
+                            { "title": "Блок по выбору (1 из 2)", "category": "workshop", "status": "по выбору", "department": "—", "format": "уточняется", "rup": "#" },
+                            { "title": "Фундаментальные модели для структурированных данных (воркшоп)", "category": "workshop", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Альтернативные архитектуры и методы в ИИ (воркшоп)", "category": "workshop", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Рекомендательные системы", "category": "ml", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Геометрические методы в глубоком обучении (воркшоп)", "category": "workshop", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" }
+                        ]
+                    }
+                ],
+                "практический": [
+                    {
+                        "semester": 9,
+                        "title": "9 Семестр",
+                        "courses": [
+                            { "title": "Статистическая теория машинного обучения I", "category": "math", "status": "обязательный", "department": "Кафедра математических основ управления", "format": "уточняется", "rup": "#" },
+                            { "title": "Блок по выбору (1 из 2)", "category": "workshop", "status": "по выбору", "department": "—", "format": "уточняется", "rup": "#" },
+                            { "title": "Основы обучения с подкреплением", "category": "ml", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Математика больших данных", "category": "math", "status": "обязательный", "department": "Кафедра математических основ управления", "format": "уточняется", "rup": "#" },
+                            { "title": "Методы оптимизации в задачах машинного обучения", "category": "math", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Блок по выбору (1 из 2)", "category": "workshop", "status": "по выбору", "department": "—", "format": "уточняется", "rup": "#" },
+                            { "title": "Современное компьютерное зрение", "category": "ml", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "ИИ для роботов", "category": "ml", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Рекомендательные системы", "category": "ml", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" }
+                        ]
+                    },
+                    {
+                        "semester": 10,
+                        "title": "10 Семестр",
+                        "courses": [
+                            { "title": "Анализ временных рядов", "category": "ml", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Академическое письмо", "category": "ml", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Блок по выбору (1 из 2)", "category": "workshop", "status": "по выбору", "department": "—", "format": "уточняется", "rup": "#" },
+                            { "title": "Геометрические методы в глубоком обучении (воркшоп)", "category": "workshop", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Агенты: обучение, мультиагентные системы, ризонинг, автономия (воркшоп)", "category": "workshop", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "MLOps. Внедрение и поддержка приложений на основе машинного обучения", "category": "cs", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Матричный анализ и вычислительная алгебра", "category": "math", "status": "обязательный", "department": "Кафедра математических основ управления", "format": "уточняется", "rup": "#" }
+                        ]
+                    },
+                    {
+                        "semester": 11,
+                        "title": "11 Семестр",
+                        "courses": [
+                            { "title": "Альтернативные архитектуры и методы в ИИ (воркшоп)", "category": "workshop", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Масштабирование больших языковых моделей", "category": "cs", "status": "обязательный", "department": "Кафедра анализа данных", "format": "уточняется", "rup": "#" },
+                            { "title": "Доверенный искусственный интеллект", "category": "ml", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        const levelLabels = {
+            "бакалавриат": "Бакалавриат",
+            "магистратура": "Магистратура"
+        };
+
+        const trackLabels = {
+            "теоретический": "Теоретический",
+            "практический": "Практический"
+        };
+
+        const state = {
+            level: 'бакалавриат',
+            track: 'теоретический'
+        };
+
+        const board = document.getElementById('board');
+        const emptyState = document.getElementById('empty-state');
+        const levelSwitch = document.getElementById('level-switch');
+        const trackSwitch = document.getElementById('track-switch');
+
+        function prettifyText(text) {
+            return (text || '').replace(/\s+/g, ' ').trim();
+        }
+
+        function createSegmentedButtons(container, options, currentValue, onClick) {
+            container.innerHTML = '';
+            options.forEach(([value, label]) => {
+                const button = document.createElement('button');
+                button.className = `segmented-btn px-3 py-1.5 rounded-xl text-xs font-semibold ${value === currentValue ? 'active' : 'text-slate-600 hover:text-slate-900'}`;
+                button.textContent = label;
+                button.addEventListener('click', () => onClick(value));
+                container.appendChild(button);
+            });
+        }
+
+        function createCourseCard(course) {
+            const theme = categoryThemes[course.category] || categoryThemes.ml;
+            const isBachelor = state.level === 'бакалавриат';
+            const isMaster = state.level === 'магистратура';
+            const showStatusBadge = !isMaster && !(isBachelor && course.status === 'обязательный');
+            const showDepartment = !isMaster;
+            const card = document.createElement('div');
+            card.className = `bg-white border border-slate-200 ${theme.border} ${theme.bg} course-card rounded-2xl p-5 cursor-pointer flex flex-col gap-3 shadow-sm hover:border-slate-300`;
+            card.dataset.full = JSON.stringify({ ...course, level: state.level, track: state.track });
+
+            const choiceHint = course.isChoiceGroup
+                ? `<div class="rounded-xl bg-white/70 border border-slate-200 px-3 py-2 text-[11px] leading-relaxed text-slate-600">
+                        <ul class="list-disc pl-4 space-y-1">
+                            ${(course.options || []).map(option => `<li>${option.title}</li>`).join('')}
+                        </ul>
+                   </div>`
+                : '';
+
+            const departmentHtml = showDepartment
+                ? `<div class="space-y-2 border-t border-slate-200/60 pt-4">
+                        <div class="flex items-start gap-2 text-[11px] text-slate-500 font-semibold leading-relaxed">
+                            <i data-lucide="building-2" class="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5"></i>
+                            <span>${course.department}</span>
+                        </div>
+                   </div>`
+                : '';
+
+            card.innerHTML = `
+                <div class="flex items-start justify-between gap-3">
+                    <h4 class="font-bold text-slate-800 text-[16px] leading-tight">${course.title}</h4>
+                    ${showStatusBadge ? `<span class="shrink-0 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide ${theme.badge}">${course.status}</span>` : ''}
+                </div>
+                ${choiceHint}
+                ${departmentHtml}
+            `;
+            card.addEventListener('click', openModal);
+            return card;
+        }
+
+        function normalizeSemesterCourses(courses) {
+            if (state.level !== 'магистратура') return courses;
+
+            const normalized = [];
+            for (let i = 0; i < courses.length; i++) {
+                const current = courses[i];
+                const isChoiceBlock = current.title.toLowerCase().includes('блок по выбору');
+
+                if (isChoiceBlock) {
+                    const option1 = courses[i + 1];
+                    const option2 = courses[i + 2];
+
+                    if (option1 && option2) {
+                        normalized.push({
+                            title: current.title,
+                            category: (option1.category || option2.category || 'ml'),
+                            status: 'по выбору',
+                            department: 'Выберите одну из двух дисциплин',
+                            format: '1 дисциплина на выбор',
+                            rup: '#',
+                            isChoiceGroup: true,
+                            options: [option1, option2]
+                        });
+                        i += 2;
+                        continue;
+                    }
+                }
+
+                normalized.push(current);
+            }
+
+            return normalized;
+        }
+
+        function renderBoard() {
+            const semesters = curriculumData[state.level]?.[state.track] || [];
+            board.innerHTML = '';
+
+            document.getElementById('page-title').textContent = `${levelLabels[state.level]}: ${trackLabels[state.track]} трек`;
+            document.getElementById('page-subtitle').textContent = `Предметы загружены из учебного файла для направления «${trackLabels[state.track].toLowerCase()}»`;
+
+            if (!semesters.length) {
+                emptyState.classList.remove('hidden');
+                lucide.createIcons();
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+
+            semesters.forEach((sem) => {
+                const column = document.createElement('div');
+                column.className = 'semester-column flex flex-col h-auto';
+
+                const header = document.createElement('div');
+                header.className = 'mb-5 px-1 flex flex-col gap-1';
+                header.innerHTML = `
+                    <h3 class="text-2xl font-black text-slate-900">${sem.title}</h3>
+                    <div class="h-1.5 w-12 bg-slate-900 rounded-full"></div>
+                `;
+                column.appendChild(header);
+
+                const list = document.createElement('div');
+                list.className = 'flex flex-col gap-4';
+                const normalizedCourses = normalizeSemesterCourses(sem.courses);
+                normalizedCourses.forEach(course => list.appendChild(createCourseCard(course)));
+                column.appendChild(list);
+                board.appendChild(column);
+            });
+
+            lucide.createIcons();
+        }
+
+        function renderSwitches() {
+            createSegmentedButtons(levelSwitch, Object.entries(levelLabels), state.level, (value) => {
+                state.level = value;
+                renderSwitches();
+                renderBoard();
+            });
+
+            createSegmentedButtons(trackSwitch, Object.entries(trackLabels), state.track, (value) => {
+                state.track = value;
+                renderSwitches();
+                renderBoard();
+            });
+        }
+
+        const modal = document.getElementById('course-modal');
+        const modalContent = document.getElementById('modal-content-wrapper');
+
+        function openModal(e) {
+            const card = e.currentTarget;
+            const data = JSON.parse(card.dataset.full);
+            const theme = categoryThemes[data.category] || categoryThemes.ml;
+
+            document.getElementById('modal-title').textContent = prettifyText(data.title);
+            document.getElementById('modal-type-badge').textContent = data.isChoiceGroup ? 'Дисциплина по выбору' : theme.label;
+            document.getElementById('modal-type-badge').className = `px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-widest ${theme.badge}`;
+            document.getElementById('modal-level-track').textContent = `${levelLabels[data.level]} • ${trackLabels[data.track]}`;
+            document.getElementById('modal-department').textContent = prettifyText(data.department) || '—';
+            const prettyStatus = prettifyText(data.status);
+            const prettyFormat = prettifyText(data.format) || 'уточняется';
+            const hideBachelorStatus = data.level === 'бакалавриат' && prettyStatus === 'обязательный';
+            document.getElementById('modal-status-format').textContent = hideBachelorStatus
+                ? prettyFormat
+                : `${prettyStatus.charAt(0).toUpperCase() + prettyStatus.slice(1)} • ${prettyFormat}`;
+            const optionsBlock = document.getElementById('modal-options-block');
+            const optionsList = document.getElementById('modal-options-list');
+
+            if (data.isChoiceGroup && Array.isArray(data.options) && data.options.length) {
+                optionsBlock.classList.remove('hidden');
+                optionsList.innerHTML = data.options.map((option, index) => `
+                    <div class="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
+                        <div class="text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-1">Вариант ${index + 1}</div>
+                        <div class="text-sm font-semibold text-slate-800">${option.title}</div>
+                        <div class="text-xs text-slate-500 mt-1">${option.department || '—'}</div>
+                    </div>
+                `).join('');
+                document.getElementById('modal-link').classList.add('hidden');
+            } else {
+                optionsBlock.classList.add('hidden');
+                optionsList.innerHTML = '';
+                document.getElementById('modal-link').href = data.rup || '#';
+
+                if (!data.rup || data.rup === '#') {
+                    document.getElementById('modal-link').classList.add('hidden');
+                } else {
+                    document.getElementById('modal-link').classList.remove('hidden');
+                }
+            }
+
+            lucide.createIcons();
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modalContent.classList.remove('scale-95');
+                modalContent.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeModalLogic() {
+            modal.classList.add('opacity-0');
+            modalContent.classList.remove('scale-100');
+            modalContent.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 300);
+        }
+
+        document.getElementById('close-modal').addEventListener('click', closeModalLogic);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModalLogic();
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            renderSwitches();
+            renderBoard();
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>

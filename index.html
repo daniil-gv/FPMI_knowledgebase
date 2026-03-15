@@ -64,10 +64,6 @@
         .segmented-btn {
             transition: all 0.2s ease;
         }
-
-        .block-card {
-            border-left-width: 5px;
-        }
     </style>
 </head>
 <body class="text-slate-800 h-screen flex flex-col">
@@ -90,26 +86,24 @@
                 <div class="flex flex-wrap gap-x-4 gap-y-2 text-[10px] font-bold uppercase tracking-wider text-slate-500">
                     <div class="flex items-center gap-2">
                         <div class="w-2.5 h-2.5 rounded-sm bg-blue-500"></div>
-                        <span>Математика</span>
+                        <span>Базовый блок</span>
                     </div>
                     <div class="flex items-center gap-2">
                         <div class="w-2.5 h-2.5 rounded-sm bg-emerald-500"></div>
-                        <span>Computer Science</span>
+                        <span>Современные главы ИИ</span>
                     </div>
                     <div class="flex items-center gap-2">
                         <div class="w-2.5 h-2.5 rounded-sm bg-purple-500"></div>
-                        <span>Machine Learning</span>
+                        <span>Области приложений ИИ</span>
                     </div>
                     <div class="flex items-center gap-2">
-                        <div class="w-2.5 h-2.5 rounded-sm bg-orange-400"></div>
-                        <span>Воркшоп</span>
+                        <div class="w-2.5 h-2.5 rounded-sm bg-rose-500"></div>
+                        <span>Исследовательский блок</span>
                     </div>
                 </div>
             </div>
         </div>
     </header>
-
-
 
     <main class="flex-1 overflow-auto bg-[#f1f5f9] p-6">
         <div class="flex gap-10 items-start" id="board"></div>
@@ -177,10 +171,10 @@
 
     <script>
         const categoryThemes = {
-            math: { border: 'border-blue-500', bg: 'bg-blue-50/50', badge: 'bg-blue-100 text-blue-700', label: 'Математика' },
-            cs: { border: 'border-emerald-500', bg: 'bg-emerald-50/50', badge: 'bg-emerald-100 text-emerald-700', label: 'Computer Science' },
-            ml: { border: 'border-purple-500', bg: 'bg-purple-50/50', badge: 'bg-purple-100 text-purple-700', label: 'Machine Learning' },
-            workshop: { border: 'border-orange-400', bg: 'bg-orange-50/50', badge: 'bg-orange-100 text-orange-700', label: 'Воркшоп' },
+            base: { border: 'border-blue-500', bg: 'bg-blue-50/80', badge: 'bg-blue-100 text-blue-700', label: 'Базовый блок' },
+            modern: { border: 'border-emerald-500', bg: 'bg-emerald-50/80', badge: 'bg-emerald-100 text-emerald-700', label: 'Современные и дополнительные главы ИИ' },
+            applications: { border: 'border-purple-500', bg: 'bg-purple-50/80', badge: 'bg-purple-100 text-purple-700', label: 'Области приложений ИИ' },
+            research: { border: 'border-rose-500', bg: 'bg-rose-50/80', badge: 'bg-rose-100 text-rose-700', label: 'Исследовательский блок' }
         };
 
         const curriculumData = {
@@ -190,82 +184,26 @@
                         "semester": 6,
                         "title": "6 Семестр",
                         "courses": [
-                            {
-                                "title": "Современное компьютерное зрение",
-                                "category": "ml",
-                                "status": "обязательный",
-                                "department": "Кафедра математики искусственного интеллекта",
-                                "format": "уточняется",
-                                "rup": "#"
-                            },
-                            {
-                                "title": "Матричный анализ и вычислительная алгебра",
-                                "category": "math",
-                                "status": "обязательный",
-                                "department": "Кафедра математических основ управления",
-                                "format": "уточняется",
-                                "rup": "#"
-                            }
+                            { "title": "Современное компьютерное зрение", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Матричный анализ и вычислительная алгебра", "status": "обязательный", "department": "Кафедра математических основ управления", "format": "уточняется", "rup": "#" }
                         ]
                     },
                     {
                         "semester": 7,
                         "title": "7 Семестр",
                         "courses": [
-                            {
-                                "title": "Статистическая теория машинного обучения I",
-                                "category": "math",
-                                "status": "обязательный",
-                                "department": "Кафедра математических основ управления",
-                                "format": "уточняется",
-                                "rup": "#"
-                            },
-                            {
-                                "title": "Основы обучения с подкреплением",
-                                "category": "ml",
-                                "status": "обязательный",
-                                "department": "Кафедра математики искусственного интеллекта",
-                                "format": "уточняется",
-                                "rup": "#"
-                            },
-                            {
-                                "title": "Альтернативные архитектуры и методы в ИИ (воркшоп)",
-                                "category": "workshop",
-                                "status": "обязательный",
-                                "department": "Кафедра математики искусственного интеллекта",
-                                "format": "уточняется",
-                                "rup": "#"
-                            }
+                            { "title": "Статистическая теория машинного обучения I", "status": "обязательный", "department": "Кафедра математических основ управления", "format": "уточняется", "rup": "#" },
+                            { "title": "Основы обучения с подкреплением", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Альтернативные архитектуры и методы в ИИ (воркшоп)", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" }
                         ]
                     },
                     {
                         "semester": 8,
                         "title": "8 Семестр",
                         "courses": [
-                            {
-                                "title": "Статистическая теория машинного обучения II",
-                                "category": "math",
-                                "status": "обязательный",
-                                "department": "Кафедра математических основ управления",
-                                "format": "уточняется",
-                                "rup": "#"
-                            },
-                            {
-                                "title": "Теория функций и архитектуры в ИИ",
-                                "category": "math",
-                                "status": "обязательный",
-                                "department": "Кафедра математики искусственного интеллекта",
-                                "format": "уточняется",
-                                "rup": "#"
-                            },
-                            {
-                                "title": "Логика, дискретные алгоритмы и ML",
-                                "category": "math",
-                                "status": "обязательный",
-                                "department": "Кафедра математики искусственного интеллекта",
-                                "format": "уточняется",
-                                "rup": "#"
-                            }
+                            { "title": "Статистическая теория машинного обучения II", "status": "обязательный", "department": "Кафедра математических основ управления", "format": "уточняется", "rup": "#" },
+                            { "title": "Теория функций и архитектуры в ИИ", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Логика, дискретные алгоритмы и ML", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" }
                         ]
                     }
                 ],
@@ -274,82 +212,26 @@
                         "semester": 6,
                         "title": "6 Семестр",
                         "courses": [
-                            {
-                                "title": "Современное компьютерное зрение",
-                                "category": "ml",
-                                "status": "обязательный",
-                                "department": "Кафедра математики искусственного интеллекта",
-                                "format": "уточняется",
-                                "rup": "#"
-                            },
-                            {
-                                "title": "Матричный анализ и вычислительная алгебра",
-                                "category": "math",
-                                "status": "обязательный",
-                                "department": "Кафедра математических основ управления",
-                                "format": "уточняется",
-                                "rup": "#"
-                            }
+                            { "title": "Современное компьютерное зрение", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Матричный анализ и вычислительная алгебра", "status": "обязательный", "department": "Кафедра математических основ управления", "format": "уточняется", "rup": "#" }
                         ]
                     },
                     {
                         "semester": 7,
                         "title": "7 Семестр",
                         "courses": [
-                            {
-                                "title": "Статистическая теория машинного обучения I",
-                                "category": "math",
-                                "status": "обязательный",
-                                "department": "Кафедра математических основ управления",
-                                "format": "уточняется",
-                                "rup": "#"
-                            },
-                            {
-                                "title": "Прикладная статистика и методология эксперимента",
-                                "category": "math",
-                                "status": "обязательный",
-                                "department": "Кафедра дискретной математики",
-                                "format": "уточняется",
-                                "rup": "#"
-                            },
-                            {
-                                "title": "Альтернативные архитектуры и методы в ИИ (воркшоп)",
-                                "category": "workshop",
-                                "status": "обязательный",
-                                "department": "Кафедра математики искусственного интеллекта",
-                                "format": "уточняется",
-                                "rup": "#"
-                            }
+                            { "title": "Статистическая теория машинного обучения I", "status": "обязательный", "department": "Кафедра математических основ управления", "format": "уточняется", "rup": "#" },
+                            { "title": "Прикладная статистика и методология эксперимента", "status": "обязательный", "department": "Кафедра дискретной математики", "format": "уточняется", "rup": "#" },
+                            { "title": "Альтернативные архитектуры и методы в ИИ (воркшоп)", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" }
                         ]
                     },
                     {
                         "semester": 8,
                         "title": "8 Семестр",
                         "courses": [
-                            {
-                                "title": "Рекомендательные системы",
-                                "category": "ml",
-                                "status": "обязательный",
-                                "department": "Кафедра математики искусственного интеллекта",
-                                "format": "уточняется",
-                                "rup": "#"
-                            },
-                            {
-                                "title": "Эффективные системы глубинного обучения",
-                                "category": "cs",
-                                "status": "обязательный",
-                                "department": "Кафедра математики искусственного интеллекта",
-                                "format": "уточняется",
-                                "rup": "#"
-                            },
-                            {
-                                "title": "Агенты: обучение, мультиагентные системы, ризонинг, автономия (воркшоп)",
-                                "category": "workshop",
-                                "status": "обязательный",
-                                "department": "Кафедра математики искусственного интеллекта",
-                                "format": "уточняется",
-                                "rup": "#"
-                            }
+                            { "title": "Рекомендательные системы", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Эффективные системы глубинного обучения", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Агенты: обучение, мультиагентные системы, ризонинг, автономия (воркшоп)", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" }
                         ]
                     }
                 ]
@@ -360,41 +242,41 @@
                         "semester": 9,
                         "title": "9 Семестр",
                         "courses": [
-                            { "title": "Статистическая теория машинного обучения I", "category": "math", "status": "обязательный", "department": "Кафедра математических основ управления", "format": "уточняется", "rup": "#" },
-                            { "title": "Блок по выбору (1 из 2)", "category": "workshop", "status": "по выбору", "department": "—", "format": "уточняется", "rup": "#" },
-                            { "title": "Основы обучения с подкреплением", "category": "ml", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
-                            { "title": "Математика больших данных", "category": "math", "status": "обязательный", "department": "Кафедра математических основ управления", "format": "уточняется", "rup": "#" },
-                            { "title": "Блок по выбору (1 из 2)", "category": "workshop", "status": "по выбору", "department": "—", "format": "уточняется", "rup": "#" },
-                            { "title": "Теория информации: приложения к ИИ", "category": "math", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
-                            { "title": "Графовые нейронные сети", "category": "ml", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
-                            { "title": "Блок по выбору (1 из 2)", "category": "workshop", "status": "по выбору", "department": "—", "format": "уточняется", "rup": "#" },
-                            { "title": "Теория оптимизации", "category": "math", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
-                            { "title": "Методы оптимизации в задачах машинного обучения", "category": "math", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
-                            { "title": "Прикладная статистика и теория эксперимента", "category": "math", "status": "обязательный", "department": "Кафедра дискретной математики", "format": "уточняется", "rup": "#" }
+                            { "title": "Статистическая теория машинного обучения I", "status": "обязательный", "department": "Кафедра математических основ управления", "format": "уточняется", "rup": "#" },
+                            { "title": "Блок по выбору", "status": "по выбору", "department": "—", "format": "уточняется", "rup": "#" },
+                            { "title": "Основы обучения с подкреплением", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Математика больших данных", "status": "обязательный", "department": "Кафедра математических основ управления", "format": "уточняется", "rup": "#" },
+                            { "title": "Блок по выбору", "status": "по выбору", "department": "—", "format": "уточняется", "rup": "#" },
+                            { "title": "Теория информации: приложения к ИИ", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Графовые нейронные сети", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Блок по выбору", "status": "по выбору", "department": "—", "format": "уточняется", "rup": "#" },
+                            { "title": "Теория оптимизации", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Методы оптимизации в задачах машинного обучения", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Прикладная статистика и теория эксперимента", "status": "обязательный", "department": "Кафедра дискретной математики", "format": "уточняется", "rup": "#" }
                         ]
                     },
                     {
                         "semester": 10,
                         "title": "10 Семестр",
                         "courses": [
-                            { "title": "Логика, дискретные алгоритмы и ML", "category": "math", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
-                            { "title": "Академическое письмо", "category": "ml", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
-                            { "title": "Блок по выбору (1 из 2)", "category": "workshop", "status": "по выбору", "department": "—", "format": "уточняется", "rup": "#" },
-                            { "title": "Выразительность трансформеров", "category": "ml", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
-                            { "title": "Рандомизированные алгоритмы линейной алгебры", "category": "ml", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
-                            { "title": "Теория функций и архитектуры в ИИ", "category": "math", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
-                            { "title": "Матричный анализ и вычислительная алгебра", "category": "math", "status": "обязательный", "department": "Кафедра математических основ управления", "format": "уточняется", "rup": "#" }
+                            { "title": "Логика, дискретные алгоритмы и ML", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Академическое письмо", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Блок по выбору", "status": "по выбору", "department": "—", "format": "уточняется", "rup": "#" },
+                            { "title": "Выразительность трансформеров", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Рандомизированные алгоритмы линейной алгебры", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Теория функций и архитектуры в ИИ", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Матричный анализ и вычислительная алгебра", "status": "обязательный", "department": "Кафедра математических основ управления", "format": "уточняется", "rup": "#" }
                         ]
                     },
                     {
                         "semester": 11,
                         "title": "11 Семестр",
                         "courses": [
-                            { "title": "Блок по выбору (1 из 2)", "category": "workshop", "status": "по выбору", "department": "—", "format": "уточняется", "rup": "#" },
-                            { "title": "Фундаментальные модели для структурированных данных (воркшоп)", "category": "workshop", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
-                            { "title": "Альтернативные архитектуры и методы в ИИ (воркшоп)", "category": "workshop", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
-                            { "title": "Рекомендательные системы", "category": "ml", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
-                            { "title": "Геометрические методы в глубоком обучении (воркшоп)", "category": "workshop", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" }
+                            { "title": "Блок по выбору", "status": "по выбору", "department": "—", "format": "уточняется", "rup": "#" },
+                            { "title": "Фундаментальные модели для структурированных данных (воркшоп)", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Альтернативные архитектуры и методы в ИИ (воркшоп)", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Рекомендательные системы", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Геометрические методы в глубоком обучении (воркшоп)", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" }
                         ]
                     }
                 ],
@@ -403,37 +285,37 @@
                         "semester": 9,
                         "title": "9 Семестр",
                         "courses": [
-                            { "title": "Статистическая теория машинного обучения I", "category": "math", "status": "обязательный", "department": "Кафедра математических основ управления", "format": "уточняется", "rup": "#" },
-                            { "title": "Блок по выбору (1 из 2)", "category": "workshop", "status": "по выбору", "department": "—", "format": "уточняется", "rup": "#" },
-                            { "title": "Основы обучения с подкреплением", "category": "ml", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
-                            { "title": "Математика больших данных", "category": "math", "status": "обязательный", "department": "Кафедра математических основ управления", "format": "уточняется", "rup": "#" },
-                            { "title": "Методы оптимизации в задачах машинного обучения", "category": "math", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
-                            { "title": "Блок по выбору (1 из 2)", "category": "workshop", "status": "по выбору", "department": "—", "format": "уточняется", "rup": "#" },
-                            { "title": "Современное компьютерное зрение", "category": "ml", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
-                            { "title": "ИИ для роботов", "category": "ml", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
-                            { "title": "Рекомендательные системы", "category": "ml", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" }
+                            { "title": "Статистическая теория машинного обучения I", "status": "обязательный", "department": "Кафедра математических основ управления", "format": "уточняется", "rup": "#" },
+                            { "title": "Блок по выбору", "status": "по выбору", "department": "—", "format": "уточняется", "rup": "#" },
+                            { "title": "Основы обучения с подкреплением", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Математика больших данных", "status": "обязательный", "department": "Кафедра математических основ управления", "format": "уточняется", "rup": "#" },
+                            { "title": "Методы оптимизации в задачах машинного обучения", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Блок по выбору", "status": "по выбору", "department": "—", "format": "уточняется", "rup": "#" },
+                            { "title": "Современное компьютерное зрение", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "ИИ для роботов", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Рекомендательные системы", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" }
                         ]
                     },
                     {
                         "semester": 10,
                         "title": "10 Семестр",
                         "courses": [
-                            { "title": "Анализ временных рядов", "category": "ml", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
-                            { "title": "Академическое письмо", "category": "ml", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
-                            { "title": "Блок по выбору (1 из 2)", "category": "workshop", "status": "по выбору", "department": "—", "format": "уточняется", "rup": "#" },
-                            { "title": "Геометрические методы в глубоком обучении (воркшоп)", "category": "workshop", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
-                            { "title": "Агенты: обучение, мультиагентные системы, ризонинг, автономия (воркшоп)", "category": "workshop", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
-                            { "title": "MLOps. Внедрение и поддержка приложений на основе машинного обучения", "category": "cs", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
-                            { "title": "Матричный анализ и вычислительная алгебра", "category": "math", "status": "обязательный", "department": "Кафедра математических основ управления", "format": "уточняется", "rup": "#" }
+                            { "title": "Анализ временных рядов", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Академическое письмо", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Блок по выбору", "status": "по выбору", "department": "—", "format": "уточняется", "rup": "#" },
+                            { "title": "Геометрические методы в глубоком обучении (воркшоп)", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Агенты: обучение, мультиагентные системы, ризонинг, автономия (воркшоп)", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "MLOps. Внедрение и поддержка приложений на основе машинного обучения", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Матричный анализ и вычислительная алгебра", "status": "обязательный", "department": "Кафедра математических основ управления", "format": "уточняется", "rup": "#" }
                         ]
                     },
                     {
                         "semester": 11,
                         "title": "11 Семестр",
                         "courses": [
-                            { "title": "Альтернативные архитектуры и методы в ИИ (воркшоп)", "category": "workshop", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
-                            { "title": "Масштабирование больших языковых моделей", "category": "cs", "status": "обязательный", "department": "Кафедра анализа данных", "format": "уточняется", "rup": "#" },
-                            { "title": "Доверенный искусственный интеллект", "category": "ml", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" }
+                            { "title": "Альтернативные архитектуры и методы в ИИ (воркшоп)", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" },
+                            { "title": "Масштабирование больших языковых моделей", "status": "обязательный", "department": "Кафедра анализа данных", "format": "уточняется", "rup": "#" },
+                            { "title": "Доверенный искусственный интеллект", "status": "обязательный", "department": "Кафедра математики искусственного интеллекта", "format": "уточняется", "rup": "#" }
                         ]
                     }
                 ]
@@ -459,9 +341,40 @@
         const emptyState = document.getElementById('empty-state');
         const levelSwitch = document.getElementById('level-switch');
         const trackSwitch = document.getElementById('track-switch');
+        const modal = document.getElementById('course-modal');
+        const modalContent = document.getElementById('modal-content-wrapper');
 
         function prettifyText(text) {
             return (text || '').replace(/\s+/g, ' ').trim();
+        }
+
+        function inferCategoryByTitle(courseOrTitle) {
+            const rawTitle = typeof courseOrTitle === 'string' ? courseOrTitle : ((courseOrTitle && courseOrTitle.title) || '');
+            const title = prettifyText(rawTitle).toLowerCase();
+
+            const researchTitles = ['академическое письмо', 'научный семинар', 'математика больших данных'];
+            const baseTitles = ['статистическая теория машинного обучения', 'матричный анализ и вычислительная алгебра', 'теория оптимизации', 'основы обучения с подкреплением', 'прикладная статистика', 'теория эксперимента', 'методология эксперимента'];
+            const modernTitles = ['логика, дискретные алгоритмы и ml', 'теория функций и архитектуры в ии', 'методы оптимизации в задачах машинного обучения', 'геометрические методы в глубоком обучении', 'теория информации: приложения к ии', 'рандомизированные алгоритмы линейной алгебры', 'выразительность трансформеров'];
+            const applicationTitles = ['современное компьютерное зрение', 'анализ временных рядов', 'mlops', 'внедрение и поддержка приложений на основе машинного обучения', 'рекомендательные системы', 'альтернативные архитектуры и методы', 'агенты:', 'фундаментальные модели для структурированных данных', 'эффективные системы глубинного обучения', 'масштабирование больших языковых моделей', 'ии для роботов', 'доверенный искусственный интеллект', 'графовые нейронные сети'];
+
+            if (researchTitles.some(item => title.includes(item))) return 'research';
+            if (baseTitles.some(item => title.includes(item))) return 'base';
+            if (modernTitles.some(item => title.includes(item))) return 'modern';
+            if (applicationTitles.some(item => title.includes(item))) return 'applications';
+            return 'applications';
+        }
+
+        function getTheme(categoryKey) {
+            return categoryThemes[categoryKey] || categoryThemes.applications;
+        }
+
+        function getChoiceGroupMeta(options) {
+            const categories = [...new Set((options || []).map(option => inferCategoryByTitle(option)))];
+            return {
+                categories,
+                isMixed: categories.length > 1,
+                primaryCategory: categories[0] || 'applications'
+            };
         }
 
         function createSegmentedButtons(container, options, currentValue, onClick) {
@@ -476,19 +389,37 @@
         }
 
         function createCourseCard(course) {
-            const theme = categoryThemes[course.category] || categoryThemes.ml;
+            const resolvedCategory = course.resolvedCategory || inferCategoryByTitle(course);
+            const theme = getTheme(resolvedCategory);
             const isBachelor = state.level === 'бакалавриат';
             const isMaster = state.level === 'магистратура';
             const showStatusBadge = !isMaster && !(isBachelor && course.status === 'обязательный');
             const showDepartment = !isMaster;
+            const choiceMeta = course.isChoiceGroup ? getChoiceGroupMeta(course.options) : null;
+            const isMixedChoice = Boolean(choiceMeta && choiceMeta.isMixed);
             const card = document.createElement('div');
-            card.className = `bg-white border border-slate-200 ${theme.border} ${theme.bg} course-card rounded-2xl p-5 cursor-pointer flex flex-col gap-3 shadow-sm hover:border-slate-300`;
-            card.dataset.full = JSON.stringify({ ...course, level: state.level, track: state.track });
+
+            if (isMixedChoice) {
+                const colorMap = { base: '#3b82f6', modern: '#10b981', applications: '#8b5cf6', research: '#f43f5e' };
+                const colorA = colorMap[choiceMeta.categories[0]] || colorMap.applications;
+                const colorB = colorMap[choiceMeta.categories[1]] || colorMap.applications;
+                card.className = 'bg-white border border-slate-200 course-card rounded-2xl p-5 cursor-pointer flex flex-col gap-3 shadow-sm hover:border-slate-300 relative overflow-hidden';
+                card.style.borderLeftWidth = '0px';
+                card.style.backgroundImage = `linear-gradient(to right, ${colorA} 0px, ${colorA} 5px, ${colorB} 5px, ${colorB} 10px, #ffffff 10px, #ffffff 100%)`;
+            } else {
+                card.className = `${theme.bg} ${theme.border} border course-card rounded-2xl p-5 cursor-pointer flex flex-col gap-3 shadow-sm hover:border-slate-300`;
+            }
+
+            card.dataset.full = JSON.stringify({ ...course, resolvedCategory, level: state.level, track: state.track });
 
             const choiceHint = course.isChoiceGroup
-                ? `<div class="rounded-xl bg-white/70 border border-slate-200 px-3 py-2 text-[11px] leading-relaxed text-slate-600">
-                        <ul class="list-disc pl-4 space-y-1">
-                            ${(course.options || []).map(option => `<li>${option.title}</li>`).join('')}
+                ? `<div class="rounded-xl ${isMixedChoice ? 'bg-slate-50 border-slate-200' : 'bg-white/70 border-slate-200'} border px-3 py-2 text-[11px] leading-relaxed text-slate-600">
+                        <ul class="space-y-2">
+                            ${(course.options || []).map(option => {
+                                const optionCategory = inferCategoryByTitle(option);
+                                const dotClass = getTheme(optionCategory).border.replace('border-', 'bg-');
+                                return `<li class="flex items-start gap-2"><span class="w-2 h-2 rounded-full mt-1.5 shrink-0 ${dotClass}"></span><span>${option.title}</span></li>`;
+                            }).join('')}
                         </ul>
                    </div>`
                 : '';
@@ -515,36 +446,36 @@
         }
 
         function normalizeSemesterCourses(courses) {
-            if (state.level !== 'магистратура') return courses;
+            if (state.level !== 'магистратура') {
+                return courses.map(course => ({ ...course, resolvedCategory: inferCategoryByTitle(course) }));
+            }
 
             const normalized = [];
             for (let i = 0; i < courses.length; i++) {
                 const current = courses[i];
-                const isChoiceBlock = current.title.toLowerCase().includes('блок по выбору');
+                const isChoiceBlock = prettifyText(current.title).toLowerCase().includes('блок по выбору');
 
                 if (isChoiceBlock) {
                     const option1 = courses[i + 1];
                     const option2 = courses[i + 2];
-
                     if (option1 && option2) {
                         normalized.push({
                             title: current.title,
-                            category: (option1.category || option2.category || 'ml'),
                             status: 'по выбору',
                             department: 'Выберите одну из двух дисциплин',
                             format: '1 дисциплина на выбор',
                             rup: '#',
                             isChoiceGroup: true,
-                            options: [option1, option2]
+                            options: [option1, option2],
+                            resolvedCategory: inferCategoryByTitle(option1)
                         });
                         i += 2;
                         continue;
                     }
                 }
 
-                normalized.push(current);
+                normalized.push({ ...current, resolvedCategory: inferCategoryByTitle(current) });
             }
-
             return normalized;
         }
 
@@ -577,8 +508,7 @@
 
                 const list = document.createElement('div');
                 list.className = 'flex flex-col gap-4';
-                const normalizedCourses = normalizeSemesterCourses(sem.courses);
-                normalizedCourses.forEach(course => list.appendChild(createCourseCard(course)));
+                normalizeSemesterCourses(sem.courses).forEach(course => list.appendChild(createCourseCard(course)));
                 column.appendChild(list);
                 board.appendChild(column);
             });
@@ -600,52 +530,60 @@
             });
         }
 
-        const modal = document.getElementById('course-modal');
-        const modalContent = document.getElementById('modal-content-wrapper');
-
         function openModal(e) {
             const card = e.currentTarget;
             const data = JSON.parse(card.dataset.full);
-            const theme = categoryThemes[data.category] || categoryThemes.ml;
+            const theme = getTheme(data.resolvedCategory || inferCategoryByTitle(data));
 
             document.getElementById('modal-title').textContent = prettifyText(data.title);
             document.getElementById('modal-type-badge').textContent = data.isChoiceGroup ? 'Дисциплина по выбору' : theme.label;
             document.getElementById('modal-type-badge').className = `px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-widest ${theme.badge}`;
             document.getElementById('modal-level-track').textContent = `${levelLabels[data.level]} • ${trackLabels[data.track]}`;
             document.getElementById('modal-department').textContent = prettifyText(data.department) || '—';
+
             const prettyStatus = prettifyText(data.status);
             const prettyFormat = prettifyText(data.format) || 'уточняется';
             const hideBachelorStatus = data.level === 'бакалавриат' && prettyStatus === 'обязательный';
-            document.getElementById('modal-status-format').textContent = hideBachelorStatus
+            const hideMasterStatus = data.level === 'магистратура';
+            document.getElementById('modal-status-format').textContent = (hideBachelorStatus || hideMasterStatus)
                 ? prettyFormat
                 : `${prettyStatus.charAt(0).toUpperCase() + prettyStatus.slice(1)} • ${prettyFormat}`;
+
             const optionsBlock = document.getElementById('modal-options-block');
             const optionsList = document.getElementById('modal-options-list');
+            const modalLink = document.getElementById('modal-link');
 
             if (data.isChoiceGroup && Array.isArray(data.options) && data.options.length) {
                 optionsBlock.classList.remove('hidden');
-                optionsList.innerHTML = data.options.map((option, index) => `
-                    <div class="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
-                        <div class="text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-1">Вариант ${index + 1}</div>
-                        <div class="text-sm font-semibold text-slate-800">${option.title}</div>
-                        <div class="text-xs text-slate-500 mt-1">${option.department || '—'}</div>
-                    </div>
-                `).join('');
-                document.getElementById('modal-link').classList.add('hidden');
+                optionsList.innerHTML = data.options.map((option, index) => {
+                    const optionCategory = inferCategoryByTitle(option);
+                    const dotClass = getTheme(optionCategory).border.replace('border-', 'bg-');
+                    return `
+                        <div class="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
+                            <div class="text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-1">Вариант ${index + 1}</div>
+                            <div class="flex items-start gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full mt-1.5 shrink-0 ${dotClass}"></span>
+                                <div>
+                                    <div class="text-sm font-semibold text-slate-800">${option.title}</div>
+                                    <div class="text-xs text-slate-500 mt-1">${option.department || '—'}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                modalLink.classList.add('hidden');
             } else {
                 optionsBlock.classList.add('hidden');
                 optionsList.innerHTML = '';
-                document.getElementById('modal-link').href = data.rup || '#';
-
+                modalLink.href = data.rup || '#';
                 if (!data.rup || data.rup === '#') {
-                    document.getElementById('modal-link').classList.add('hidden');
+                    modalLink.classList.add('hidden');
                 } else {
-                    document.getElementById('modal-link').classList.remove('hidden');
+                    modalLink.classList.remove('hidden');
                 }
             }
 
             lucide.createIcons();
-
             modal.classList.remove('hidden');
             modal.classList.add('flex');
             setTimeout(() => {
@@ -665,12 +603,29 @@
             }, 300);
         }
 
+        function runDebugChecks() {
+            const sampleTitles = [
+                'Матричный анализ и вычислительная алгебра',
+                'Теория функций и архитектуры в ИИ',
+                'Рекомендательные системы',
+                'Академическое письмо'
+            ];
+
+            sampleTitles.forEach(title => {
+                const key = inferCategoryByTitle(title);
+                if (!categoryThemes[key]) {
+                    console.error('Не найдена тема для курса:', title, key);
+                }
+            });
+        }
+
         document.getElementById('close-modal').addEventListener('click', closeModalLogic);
         modal.addEventListener('click', (e) => {
             if (e.target === modal) closeModalLogic();
         });
 
         window.addEventListener('DOMContentLoaded', () => {
+            runDebugChecks();
             renderSwitches();
             renderBoard();
             lucide.createIcons();

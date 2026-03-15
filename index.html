@@ -484,7 +484,6 @@
             board.innerHTML = '';
 
             document.getElementById('page-title').textContent = `${levelLabels[state.level]}: ${trackLabels[state.track]} трек`;
-            document.getElementById('page-subtitle').textContent = `Предметы загружены из учебного файла для направления «${trackLabels[state.track].toLowerCase()}»`;
 
             if (!semesters.length) {
                 emptyState.classList.remove('hidden');
